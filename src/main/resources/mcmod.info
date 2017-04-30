@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "toolprogression",
+    "name": "Tool Progression",
+    "description": "A small mod, which allows to set harvest levels of tools and blocks",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "tyra314"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
