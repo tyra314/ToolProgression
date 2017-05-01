@@ -5,8 +5,10 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tyra314.toolprogression.command.ToolProgressionCommand;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 @Mod(modid = ToolProgressionMod.MODID, version = ToolProgressionMod.VERSION)
@@ -39,5 +41,11 @@ public class ToolProgressionMod
     public void postInit(FMLPostInitializationEvent e)
     {
         proxy.postInit(e);
+    }
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new ToolProgressionCommand());
     }
 }
