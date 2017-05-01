@@ -39,6 +39,8 @@ public class HarvestEventHandler
         {
             int level = item.getItem().getHarvestLevel(item, toolclass, event.getEntityPlayer(), state);
             event.setCanceled(level < required_level);
+
+            return;
         }
 
         if (required_level >= 0)
