@@ -1,11 +1,17 @@
 package tyra314.toolprogression.config;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
+import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestLevel;
+import tyra314.toolprogression.harvest.ToolOverwrite;
 import tyra314.toolprogression.proxy.CommonProxy;
+
+import java.util.Map;
 
 public class ConfigHandler
 {
@@ -20,9 +26,7 @@ public class ConfigHandler
         Configuration base_cfg = CommonProxy.base_config;
         Configuration level_names_cfg = CommonProxy.mining_level_config;
 
-        Configuration blocks_config = CommonProxy.blocks_config;
         Configuration block_overwrites_config = CommonProxy.block_overwrites_config;
-        Configuration tools_config = CommonProxy.tools_config;
         Configuration tool_overwrites_config = CommonProxy.tool_overwrites_config;
 
         try
@@ -30,13 +34,13 @@ public class ConfigHandler
             base_cfg.load();
             level_names_cfg.load();
 
-            blocks_config.load();
             block_overwrites_config.load();
-            tools_config.load();
             tool_overwrites_config.load();
 
             initGeneralConfig(base_cfg);
             initMiningLevelConfig(level_names_cfg);
+            initBlockOverwriteConfig(block_overwrites_config);
+            initToolOverwriteConfig(tool_overwrites_config);
 
         } catch (Exception e1)
         {
@@ -94,7 +98,29 @@ public class ConfigHandler
 
     private static void initBlockOverwriteConfig(Configuration cfg)
     {
+        cfg.addCustomCategoryComment("block", "To add any overwrites, simply copy them over from the blocks.cfg");
 
+        for (Map.Entry<String, Property> tool : cfg.getCategory("block").entrySet())
+        {
+            ResourceLocation rl = new ResourceLocation(tool.getKey());
+            BlockOverwrite overwrite = BlockOverwrite.readFromConfig(tool.getValue().getString());
+            if (overwrite != null)
+            {
+                BlockOverwrite.overwrites.put(rl, overwrite);
+            }
+        }
+    }
+
+    private static void initToolOverwriteConfig(Configuration cfg)
+    {
+        cfg.addCustomCategoryComment("tool", "To add any overwrites, simply copy them over from the tools.cfg");
+
+        for (Map.Entry<String, Property> tool : cfg.getCategory("tool").entrySet())
+        {
+            ResourceLocation rl = new ResourceLocation(tool.getKey());
+            ToolOverwrite overwrite = ToolOverwrite.readFromconfig(tool.getValue().getString());
+            ToolOverwrite.overwrites.put(rl, overwrite);
+        }
     }
 
 }

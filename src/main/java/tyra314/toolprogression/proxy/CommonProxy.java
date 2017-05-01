@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
+import tyra314.toolprogression.handlers.HarvestEventHandler;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.OverwriteHelper;
 
@@ -50,6 +51,8 @@ public class CommonProxy
     public void init(FMLInitializationEvent e)
     {
         MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
+        MinecraftForge.EVENT_BUS.register(new HarvestEventHandler());
+
     }
 
     public void postInit(FMLPostInitializationEvent e)

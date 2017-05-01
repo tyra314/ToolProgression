@@ -4,12 +4,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.Level;
+import tyra314.toolprogression.ToolProgressionMod;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ToolOverwrite
 {
+    private Map<String, Integer> harvest_levels = new HashMap<>();
+
     public final static Map<ResourceLocation, ToolOverwrite> overwrites = new HashMap();
 
     public static String getConfig(Item item)
@@ -46,6 +50,46 @@ public class ToolOverwrite
             return;
         }
 
+        if (overwrites.containsKey(item.getRegistryName()))
+        {
+            ToolOverwrite overwrite = overwrites.get(item.getRegistryName());
 
+            overwrite.apply((ItemTool) item);
+        }
+    }
+
+    public static ToolOverwrite readFromconfig(String config)
+    {
+        ToolOverwrite overwrite = new ToolOverwrite();
+
+        String[] tokens = config.split(",");
+
+        for (String token : tokens)
+        {
+            String[] tok = token.split("=");
+
+            if (tok.length == 2)
+            {
+                overwrite.addOverwrite(tok[0], Integer.parseInt(tok[1]));
+            } else
+            {
+                ToolProgressionMod.logger.log(Level.WARN, "Problem parsing tool overwrite: ", config);
+            }
+        }
+
+        return overwrite;
+    }
+
+    public void addOverwrite(String toolclass, int level)
+    {
+        harvest_levels.put(toolclass, level);
+    }
+
+    public void apply(ItemTool item)
+    {
+        for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
+        {
+            item.setHarvestLevel(entry.getKey(), entry.getValue());
+        }
     }
 }
