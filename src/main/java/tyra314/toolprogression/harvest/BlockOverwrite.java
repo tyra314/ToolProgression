@@ -16,6 +16,11 @@ public class BlockOverwrite
 
     public static String getConfig(Block block)
     {
+        if (block.getMaterial(block.getDefaultState()).isToolNotRequired())
+        {
+            return "null=-1";
+        }
+
         String toolClass = block.getHarvestTool(block.getDefaultState());
         int level = block.getHarvestLevel(block.getDefaultState());
 
