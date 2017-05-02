@@ -15,8 +15,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
-import tyra314.toolprogression.harvest.OverwriteHelper;
+import tyra314.toolprogression.harvest.BlockOverwrite;
+import tyra314.toolprogression.harvest.ToolOverwrite;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -26,25 +28,28 @@ public class ToolProgressionCommand extends CommandBase
     private final List<String> aliases = Lists.newArrayList(ToolProgressionMod.MODID);
 
     @Override
-    public String getName()
+    public @Nonnull
+    String getName()
     {
         return "tpr";
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public @Nonnull
+    String getUsage(@Nonnull ICommandSender sender)
     {
         return "tpr reload";
     }
 
     @Override
-    public List<String> getAliases()
+    public @Nonnull
+    List<String> getAliases()
     {
         return aliases;
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
     {
         if (args.length != 1 || !args[0].equals("reload"))
         {
@@ -59,7 +64,7 @@ public class ToolProgressionCommand extends CommandBase
 
         for (Block block : block_registry)
         {
-            OverwriteHelper.applyOverwrite(block);
+            BlockOverwrite.applyToAllStates(block);
         }
 
         final IForgeRegistry<Item> item_registry = GameRegistry.findRegistry(Item.class);
@@ -68,10 +73,10 @@ public class ToolProgressionCommand extends CommandBase
         {
             if (item instanceof ItemTool)
             {
-                OverwriteHelper.applyOverwrite(item);
+                ToolOverwrite.applyToItem(item);
             }
         }
-        sender.sendMessage(new TextComponentString("ToolProgression configuration reloaded."));
+        sender.sendMessage(new TextComponentString("§e§lToolProgression§r configuration reloaded."));
     }
 
     @Override
@@ -81,9 +86,10 @@ public class ToolProgressionCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    public @Nonnull
+    List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args, @Nullable BlockPos targetPos)
     {
-        if (args[1].equals(""))
+        if ("reload".startsWith(args[0]))
         {
             return Lists.newArrayList("reload");
         }
