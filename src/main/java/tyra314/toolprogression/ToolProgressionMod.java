@@ -15,15 +15,18 @@ import tyra314.toolprogression.proxy.CommonProxy;
 public class ToolProgressionMod
 {
     public static final String MODID = "toolprogression";
+    @SuppressWarnings("WeakerAccess")
     public static final String VERSION = "1.0";
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @SidedProxy(clientSide = "tyra314.toolprogression.proxy.ClientProxy", serverSide = "tyra314.toolprogression.proxy.ServerProxy")
     public static CommonProxy proxy;
 
+    @SuppressWarnings("unused")
     @Mod.Instance
     public static ToolProgressionMod instance;
 
-    public static Logger logger = LogManager.getLogger(MODID);
+    public static final Logger logger = LogManager.getLogger(MODID);
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)

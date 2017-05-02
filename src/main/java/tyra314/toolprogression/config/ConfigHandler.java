@@ -76,15 +76,15 @@ public class ConfigHandler
         String[] names = {"0:Wood", "1:Stone:§8%s", "2:Iron:§f%s", "3:Diamond:§b%s"};
         names = cfg.getStringList("names", CATEGORY_MINING_LEVEL, names, "Canonical names");
 
-        for (int i = 0; i < names.length; i++)
+        for (String name : names)
         {
-            HarvestLevel level = HarvestLevel.readFromConfig(names[i]);
+            HarvestLevel level = HarvestLevel.readFromConfig(name);
             if (level != null)
             {
                 HarvestLevel.levels.put(level.getLevel(), level);
             } else
             {
-                ToolProgressionMod.logger.log(Level.WARN, "Problem parsing harvest level: ", names[i]);
+                ToolProgressionMod.logger.log(Level.WARN, "Problem parsing harvest level: ", name);
             }
         }
     }
@@ -102,11 +102,10 @@ public class ConfigHandler
 
         for (Map.Entry<String, Property> tool : cfg.getCategory("block").entrySet())
         {
-            ResourceLocation rl = new ResourceLocation(tool.getKey());
             BlockOverwrite overwrite = BlockOverwrite.readFromConfig(tool.getValue().getString());
             if (overwrite != null)
             {
-                BlockOverwrite.overwrites.put(rl, overwrite);
+                BlockOverwrite.overwrites.put(tool.getKey(), overwrite);
             }
         }
     }
@@ -118,7 +117,7 @@ public class ConfigHandler
         for (Map.Entry<String, Property> tool : cfg.getCategory("tool").entrySet())
         {
             ResourceLocation rl = new ResourceLocation(tool.getKey());
-            ToolOverwrite overwrite = ToolOverwrite.readFromconfig(tool.getValue().getString());
+            ToolOverwrite overwrite = ToolOverwrite.readFromConfig(tool.getValue().getString());
             ToolOverwrite.overwrites.put(rl, overwrite);
         }
     }

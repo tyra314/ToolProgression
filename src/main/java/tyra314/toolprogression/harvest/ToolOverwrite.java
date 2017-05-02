@@ -12,18 +12,18 @@ import java.util.Map;
 
 public class ToolOverwrite
 {
-    private Map<String, Integer> harvest_levels = new HashMap<>();
+    private final Map<String, Integer> harvest_levels = new HashMap<>();
 
-    public final static Map<ResourceLocation, ToolOverwrite> overwrites = new HashMap();
+    public final static Map<ResourceLocation, ToolOverwrite> overwrites = new HashMap<>();
 
-    public static String getConfig(Item item)
+    static String getConfig(Item item)
     {
         if (!(item instanceof ItemTool))
         {
             return null;
         }
 
-        String config = new String();
+        StringBuilder config = new StringBuilder();
 
         for (String toolclass : item.getToolClasses(new ItemStack(item)))
         {
@@ -31,19 +31,19 @@ public class ToolOverwrite
 
             String config_line = String.format("%s=%d", toolclass, level);
 
-            if (!config.isEmpty())
+            if (config.length() > 0)
             {
-                config += "," + config_line;
+                config.append(",").append(config_line);
             } else
             {
-                config += config_line;
+                config.append(config_line);
             }
         }
 
-        return config;
+        return config.toString();
     }
 
-    public static void applyTo(Item item)
+    public static void applyToItem(Item item)
     {
         if (!(item instanceof ItemTool))
         {
@@ -58,7 +58,7 @@ public class ToolOverwrite
         }
     }
 
-    public static ToolOverwrite readFromconfig(String config)
+    public static ToolOverwrite readFromConfig(String config)
     {
         ToolOverwrite overwrite = new ToolOverwrite();
 
@@ -80,16 +80,19 @@ public class ToolOverwrite
         return overwrite;
     }
 
-    public void addOverwrite(String toolclass, int level)
+    private void addOverwrite(String toolclass, int level)
     {
         harvest_levels.put(toolclass, level);
     }
 
-    public void apply(ItemTool item)
+    private void apply(ItemTool item)
     {
         for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
         {
             item.setHarvestLevel(entry.getKey(), entry.getValue());
+
+            ToolProgressionMod.logger.log(Level.INFO, String.format("Applying overwrite to item %s: %s %d", item.getRegistryName(), entry.getKey(), entry.getValue()));
+
         }
     }
 }

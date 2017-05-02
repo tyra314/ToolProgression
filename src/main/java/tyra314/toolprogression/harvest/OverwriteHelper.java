@@ -1,39 +1,23 @@
 package tyra314.toolprogression.harvest;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 public class OverwriteHelper
 {
-    public static void applyOverwrite(Block block)
-    {
-        if (BlockOverwrite.overwrites.containsKey(block.getRegistryName()))
-        {
-            BlockOverwrite overwrite = BlockOverwrite.overwrites.get(block.getRegistryName());
-
-            BlockOverwrite.applyTo(block);
-        }
-    }
-
-    public static void applyOverwrite(Item item)
-    {
-        if (ToolOverwrite.overwrites.containsKey(item.getRegistryName()))
-        {
-            ToolOverwrite overwrite = ToolOverwrite.overwrites.get(item.getRegistryName());
-
-            ToolOverwrite.applyTo(item);
-        }
-    }
-
     public static void handleBlock(Block block)
     {
-        String config = BlockOverwrite.getConfig(block);
+        for (IBlockState state : block.getBlockState().getValidStates())
+        {
+            String config = BlockHelper.getConfig(state);
 
-        CommonProxy.blocks_config.getString(block.getRegistryName().toString(), "block", config, block.getLocalizedName());
+            CommonProxy.blocks_config.getString(BlockHelper.getKeyString(state), "block", config, block.getLocalizedName());
 
-        applyOverwrite(block);
+            BlockOverwrite.applyToState(state);
+        }
     }
 
     public static void handleItem(Item item)
@@ -45,8 +29,9 @@ public class OverwriteHelper
             return;
         }
 
+        //noinspection ConstantConditions
         CommonProxy.tools_config.getString(item.getRegistryName().toString(), "tool", config, item.getItemStackDisplayName(new ItemStack(item)));
 
-        applyOverwrite(item);
+        ToolOverwrite.applyToItem(item);
     }
 }

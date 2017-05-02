@@ -7,8 +7,8 @@ public class HarvestLevel
 {
     public static final Map<Integer, HarvestLevel> levels = new HashMap<>();
 
-    private String name;
-    private int level;
+    private final String name;
+    private final int level;
     private String format = null;
 
     public static HarvestLevel readFromConfig(String config)
@@ -27,19 +27,20 @@ public class HarvestLevel
         return null;
     }
 
-    public HarvestLevel(int level, String name)
+    private HarvestLevel(int level, String name)
     {
         this.level = level;
         this.name = name;
     }
 
-    public HarvestLevel(int level, String name, String format)
+    private HarvestLevel(int level, String name, String format)
     {
         this.level = level;
         this.name = name;
         this.format = format;
     }
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public String getName()
     {
         return name;
@@ -50,6 +51,7 @@ public class HarvestLevel
         return level;
     }
 
+    @SuppressWarnings("unused")
     public String getFormat()
     {
         return format;

@@ -2,52 +2,46 @@ package tyra314.toolprogression.harvest;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.Level;
+import tyra314.toolprogression.ToolProgressionMod;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BlockOverwrite
 {
-    String toolclass;
-    int level;
 
-    public final static Map<ResourceLocation, BlockOverwrite> overwrites = new HashMap<>();
+    private final String toolclass;
+    private final int level;
 
-    public static String getConfig(Block block)
-    {
-        if (block.getMaterial(block.getDefaultState()).isToolNotRequired())
-        {
-            return "null=-1";
-        }
+    public final static Map<String, BlockOverwrite> overwrites = new HashMap<>();
 
-        String toolClass = block.getHarvestTool(block.getDefaultState());
-        int level = block.getHarvestLevel(block.getDefaultState());
-
-        return String.format("%s=%d", toolClass, level);
-    }
-
-    public static void applyTo(Block block)
-    {
-        if (overwrites.containsKey(block.getRegistryName()))
-        {
-            overwrites.get(block.getRegistryName()).apply(block);
-        }
-    }
-
-    public void apply(Block block)
+    public static void applyToAllStates(Block block)
     {
         for (IBlockState state : block.getBlockState().getValidStates())
         {
-            block.setHarvestLevel(toolclass, level, state);
-            if (block.getMaterial(state).isToolNotRequired())
-            {
-
-            }
+            applyToState(state);
         }
     }
 
-    public BlockOverwrite(String toolclass, int level)
+    static void applyToState(IBlockState state)
+    {
+        String key = BlockHelper.getKeyString(state);
+
+        if (overwrites.containsKey(key))
+        {
+            overwrites.get(key).apply(state);
+        }
+    }
+
+    private void apply(IBlockState state)
+    {
+        state.getBlock().setHarvestLevel(toolclass, level, state);
+
+        ToolProgressionMod.logger.log(Level.INFO, String.format("Applying overwrite to block %s: %s %d", BlockHelper.getKeyString(state), toolclass, level));
+    }
+
+    private BlockOverwrite(String toolclass, int level)
     {
         this.toolclass = toolclass;
         this.level = level;
