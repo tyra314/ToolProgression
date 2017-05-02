@@ -89,7 +89,7 @@ public class ToolProgressionCommand extends CommandBase
     public @Nonnull
     List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args, @Nullable BlockPos targetPos)
     {
-        if ("reload".startsWith(args[0]))
+        if ("reload".startsWith(args[0]) && args.length < 2)
         {
             return Lists.newArrayList("reload");
         }
