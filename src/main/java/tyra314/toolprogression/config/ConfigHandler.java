@@ -9,7 +9,6 @@ import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestLevel;
 import tyra314.toolprogression.harvest.ToolOverwrite;
-import tyra314.toolprogression.plugin.WailaPlugin;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 import java.util.Map;
@@ -22,6 +21,8 @@ public class ConfigHandler
     private static final String CATEGORY_TOOLTIP = "tooltip";
     private static final String CATEGORY_WAILA = "waila";
 
+    public static boolean waila_enabled = true;
+    public static boolean waila_show_harvestable = false;
 
 
     public static void readBaseConfig()
@@ -98,7 +99,8 @@ public class ConfigHandler
 
         TooltipEventHandler.enabled = cfg.getBoolean("enabled", CATEGORY_TOOLTIP, TooltipEventHandler.enabled, "Set this to true if you like to get extended tooltips.");
 
-        WailaPlugin.enabled = cfg.getBoolean("enabled", CATEGORY_WAILA, WailaPlugin.enabled, "Set this to true to enable the built-in WAILA plugin.");
+        waila_enabled = cfg.getBoolean("enabled", CATEGORY_WAILA, waila_enabled, "Set this to true to enable the built-in WAILA plugin.");
+        waila_show_harvestable = cfg.getBoolean("show_harvestable", CATEGORY_WAILA, waila_show_harvestable, "Set this to true to always show harvestability.");
 
     }
 

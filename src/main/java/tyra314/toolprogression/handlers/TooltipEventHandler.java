@@ -30,10 +30,10 @@ public class TooltipEventHandler
 
         if (HarvestLevel.levels.containsKey(level))
         {
-            event.getToolTip().add(String.format("Mining Level: %s", HarvestLevel.levels.get(level).getFormatted()));
+            event.getToolTip().add(String.format("§fMining Level:§r %s", HarvestLevel.levels.get(level).getFormatted()));
         } else
         {
-            event.getToolTip().add(String.format("Mining Level: %s", level));
+            event.getToolTip().add(String.format("§fMining Level:§r %d", level));
         }
     }
 }

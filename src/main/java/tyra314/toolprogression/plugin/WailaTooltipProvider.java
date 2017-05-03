@@ -4,11 +4,13 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.HarvestHelper;
 import tyra314.toolprogression.harvest.HarvestLevel;
 
@@ -45,41 +47,49 @@ class WailaTooltipProvider implements IWailaDataProvider
         String tool = accessor.getBlock().getHarvestTool(accessor.getBlockState());
         ItemStack active_tool = accessor.getPlayer().getHeldItemMainhand();
 
-        int level = accessor.getBlock().getHarvestLevel(accessor.getBlockState());
-
-        if (level > -1)
+        if (accessor.getBlock() != Blocks.BEDROCK && HarvestHelper.canItemHarvestBlock(accessor.getPlayer(), accessor.getBlockState(), accessor.getWorld(), accessor.getPosition()))
         {
-            String harvest_level;
+            if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
+            {
+                currenttip.add(0, String.format("Effective Tool : §4%s", tool));
 
-            if (HarvestLevel.levels.containsKey(level))
-            {
-                harvest_level = HarvestLevel.levels.get(level).getFormatted();
-            } else
-            {
-                harvest_level = String.valueOf(level);
             }
 
-            currenttip.add(0, String.format("Harvest Level : %s", harvest_level));
-        }
-
-        if (tool != null)
-        {
-            String format = "§4";
-
-            if (!active_tool.isEmpty() && active_tool.getItem().getToolClasses(active_tool).contains(tool))
+            if (ConfigHandler.waila_show_harvestable)
             {
-                format = "§2";
+                currenttip.add(0, "Harvestable : §2yes");
             }
-
-            currenttip.add(0, String.format("Effective Tool : %s%s", format, tool));
-        }
-
-
-        if (HarvestHelper.canItemHarvestBlock(accessor.getPlayer(), accessor.getBlockState(), accessor.getWorld(), accessor.getPosition()))
-        {
-            currenttip.add(0, "Harvestable : §2yes");
         } else
         {
+            if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
+            {
+                currenttip.add(0, String.format("Required Tool : §4%s", tool));
+
+            } else
+            {
+                if (tool != null)
+                {
+                    int required_level = accessor.getBlock().getHarvestLevel(accessor.getBlockState());
+                    int level = active_tool.getItem().getHarvestLevel(active_tool, tool, accessor.getPlayer(), accessor.getBlockState());
+
+                    if (required_level > level)
+                    {
+                        String harvest_level;
+
+                        if (HarvestLevel.levels.containsKey(required_level))
+                        {
+                            harvest_level = HarvestLevel.levels.get(required_level).getFormatted();
+                        } else
+                        {
+                            harvest_level = String.valueOf(required_level);
+                        }
+
+                        currenttip.add(0, String.format("Harvest Level : %s", harvest_level));
+                    }
+
+                }
+            }
+
             currenttip.add(0, "Harvestable : §4no");
         }
 
