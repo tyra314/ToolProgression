@@ -76,7 +76,7 @@ dependencies {
 }
 
 task deobfJar(type: Jar, dependsOn: 'jar') {
-    from "build/source/main"
+    from sourceSets.main.output
     classifier "dev"
 }
 artifacts {
