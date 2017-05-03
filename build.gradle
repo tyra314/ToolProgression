@@ -46,7 +46,8 @@ repositories {
 
 dependencies {
 
-    runtime "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    // runtime "mcp.mobius.waila:Hwyla:${hwyla_version}"
 
     runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 
