@@ -9,6 +9,7 @@ import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestLevel;
 import tyra314.toolprogression.harvest.ToolOverwrite;
+import tyra314.toolprogression.plugin.WailaPlugin;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 import java.util.Map;
@@ -19,6 +20,8 @@ public class ConfigHandler
     private static final String CATEGORY_GENERAL = "general";
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
+    private static final String CATEGORY_WAILA = "waila";
+
 
 
     public static void readBaseConfig()
@@ -94,6 +97,9 @@ public class ConfigHandler
         cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
 
         TooltipEventHandler.enabled = cfg.getBoolean("enabled", CATEGORY_TOOLTIP, TooltipEventHandler.enabled, "Set this to true if you like to get extended tooltips.");
+
+        WailaPlugin.enabled = cfg.getBoolean("enabled", CATEGORY_WAILA, WailaPlugin.enabled, "Set this to true to enable the built-in WAILA plugin.");
+
     }
 
     private static void initBlockOverwriteConfig(Configuration cfg)

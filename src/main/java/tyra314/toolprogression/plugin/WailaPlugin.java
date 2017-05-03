@@ -7,9 +7,14 @@ import net.minecraft.block.Block;
 @mcp.mobius.waila.api.WailaPlugin
 public class WailaPlugin implements IWailaPlugin
 {
+    public static boolean enabled = true;
+
     @Override
     public void register(IWailaRegistrar registrar)
     {
-        registrar.registerTailProvider(new WailaTooltipProvider(), Block.class);
+        if (enabled)
+        {
+            registrar.registerTailProvider(new WailaTooltipProvider(), Block.class);
+        }
     }
 }
