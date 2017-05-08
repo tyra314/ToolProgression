@@ -1,15 +1,11 @@
 package tyra314.toolprogression.config;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
-import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestLevel;
 import tyra314.toolprogression.proxy.CommonProxy;
-
-import java.util.Map;
 
 public class ConfigHandler
 {
@@ -22,9 +18,11 @@ public class ConfigHandler
     public static boolean waila_enabled = true;
     public static boolean waila_show_harvestable = false;
 
-    public static ToolOverwriteConfig
-            toolOverwrites =
-            new ToolOverwriteConfig(CommonProxy.tool_overwrites_config);
+    public static ToolOverwriteConfig toolOverwrites = new ToolOverwriteConfig(CommonProxy
+            .tool_overwrites_config);
+
+    public static BlockOverwriteConfig blockOverwrites = new BlockOverwriteConfig(CommonProxy
+            .block_overwrites_config);
 
     public static void readBaseConfig()
     {
@@ -42,14 +40,15 @@ public class ConfigHandler
 
             initGeneralConfig(base_cfg);
             initMiningLevelConfig(level_names_cfg);
-            initBlockOverwriteConfig(block_overwrites_config);
 
+            blockOverwrites.load();
             toolOverwrites.load();
-
-        } catch (Exception e1)
+        }
+        catch (Exception e1)
         {
             ToolProgressionMod.logger.log(Level.ERROR, "Problem loading config file!", e1);
-        } finally
+        }
+        finally
         {
             if (base_cfg.hasChanged())
             {
@@ -60,13 +59,6 @@ public class ConfigHandler
             {
                 level_names_cfg.save();
             }
-
-            if (block_overwrites_config.hasChanged())
-            {
-                block_overwrites_config.save();
-            }
-
-
         }
     }
 
@@ -83,7 +75,8 @@ public class ConfigHandler
             if (level != null)
             {
                 HarvestLevel.levels.put(level.getLevel(), level);
-            } else
+            }
+            else
             {
                 ToolProgressionMod.logger.log(Level.WARN, "Problem parsing harvest level: ", name);
             }
@@ -94,24 +87,22 @@ public class ConfigHandler
     {
         cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
 
-        TooltipEventHandler.enabled = cfg.getBoolean("enabled", CATEGORY_TOOLTIP, TooltipEventHandler.enabled, "Set this to true if you like to get extended tooltips.");
+        TooltipEventHandler.enabled =
+                cfg.getBoolean("enabled",
+                        CATEGORY_TOOLTIP,
+                        TooltipEventHandler.enabled,
+                        "Set this to true if you like to get extended tooltips.");
 
-        waila_enabled = cfg.getBoolean("enabled", CATEGORY_WAILA, waila_enabled, "Set this to true to enable the built-in WAILA plugin.");
-        waila_show_harvestable = cfg.getBoolean("show_harvestable", CATEGORY_WAILA, waila_show_harvestable, "Set this to true to always show harvestability.");
+        waila_enabled =
+                cfg.getBoolean("enabled",
+                        CATEGORY_WAILA,
+                        waila_enabled,
+                        "Set this to true to enable the built-in WAILA plugin.");
+        waila_show_harvestable =
+                cfg.getBoolean("show_harvestable",
+                        CATEGORY_WAILA,
+                        waila_show_harvestable,
+                        "Set this to true to always show harvestability.");
 
-    }
-
-    private static void initBlockOverwriteConfig(Configuration cfg)
-    {
-        cfg.addCustomCategoryComment("block", "To add any overwrites, simply copy them over from the blocks.cfg");
-
-        for (Map.Entry<String, Property> tool : cfg.getCategory("block").entrySet())
-        {
-            BlockOverwrite overwrite = BlockOverwrite.readFromConfig(tool.getValue().getString());
-            if (overwrite != null)
-            {
-                BlockOverwrite.overwrites.put(tool.getKey(), overwrite);
-            }
-        }
     }
 }

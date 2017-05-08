@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 
@@ -15,7 +16,10 @@ public class HarvestEventHandler
     {
         IBlockState state = event.getState();
 
-        if (!BlockOverwrite.overwrites.containsKey(BlockHelper.getKeyString(state)))
+        BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(BlockHelper.getKeyString
+                (state));
+
+        if (overwrite == null)
         {
             return;
         }

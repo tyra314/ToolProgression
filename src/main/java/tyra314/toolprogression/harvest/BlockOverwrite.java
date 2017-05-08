@@ -4,17 +4,23 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
-
-import java.util.HashMap;
-import java.util.Map;
+import tyra314.toolprogression.config.ConfigHandler;
 
 public class BlockOverwrite
 {
+    private String toolclass;
+    private int level;
 
-    private final String toolclass;
-    private final int level;
+    public String getConfig()
+    {
+        return toolclass + "=" + String.valueOf(level);
+    }
 
-    public final static Map<String, BlockOverwrite> overwrites = new HashMap<>();
+    public void addOverwrite(String toolClass, int level)
+    {
+        this.toolclass = toolClass;
+        this.level = level;
+    }
 
     public static void applyToAllStates(Block block)
     {
@@ -28,20 +34,22 @@ public class BlockOverwrite
     {
         String key = BlockHelper.getKeyString(state);
 
-        if (overwrites.containsKey(key))
+        BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(key);
+
+        if (overwrite != null)
         {
-            overwrites.get(key).apply(state);
+            overwrite.apply(state);
         }
     }
 
-    private void apply(IBlockState state)
+    public void apply(IBlockState state)
     {
         state.getBlock().setHarvestLevel(toolclass, level, state);
 
         ToolProgressionMod.logger.log(Level.INFO, String.format("Applying overwrite to block %s: %s %d", BlockHelper.getKeyString(state), toolclass, level));
     }
 
-    private BlockOverwrite(String toolclass, int level)
+    public BlockOverwrite(String toolclass, int level)
     {
         this.toolclass = toolclass;
         this.level = level;

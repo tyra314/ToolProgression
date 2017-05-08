@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import tyra314.toolprogression.config.ConfigHandler;
 
 public class HarvestHelper
 {
@@ -13,7 +14,10 @@ public class HarvestHelper
     {
         ItemStack item = player.getHeldItemMainhand();
 
-        if (!BlockOverwrite.overwrites.containsKey(BlockHelper.getKeyString(state)))
+        BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(BlockHelper.getKeyString
+                (state));
+
+        if (overwrite == null)
         {
             return state.getBlock().canHarvestBlock(world, pos, player);
         }

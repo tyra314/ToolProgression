@@ -2,11 +2,13 @@ package tyra314.toolprogression.command;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
+import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.ToolOverwrite;
 
@@ -63,7 +66,7 @@ public class ToolProgressionCommand extends CommandBase
                                                    msg));
     }
 
-    private void handleReload(@Nonnull ICommandSender sender)
+    private boolean handleReload(@Nonnull ICommandSender sender)
     {
         ConfigHandler.readBaseConfig();
 
@@ -84,9 +87,11 @@ public class ToolProgressionCommand extends CommandBase
             }
         }
         sendMessage(sender, "configuration reloaded.");
+
+        return true;
     }
 
-    private void handleUnset(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender)
+    private boolean handleUnset(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender)
     {
         // FIXME Assuming singleplayer
         assert server.isSinglePlayer();
@@ -102,7 +107,7 @@ public class ToolProgressionCommand extends CommandBase
             sender.sendMessage(new TextComponentString(TextFormatting.RED +
                                                        "Can't unset overwrite for an empty item."));
 
-            return;
+            return true;
         }
 
         Item item = stack.getItem();
@@ -117,14 +122,39 @@ public class ToolProgressionCommand extends CommandBase
                                 stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
                                 ".");
 
-            sendMessage(sender, " needs to restart, in order to restore this overwrite.");
+            sendMessage(sender, "needs to restart, in order to restore the default.");
 
-            return;
+            return true;
         }
+
+        if (item instanceof ItemBlock)
+        {
+            ItemBlock iblock = (ItemBlock) item;
+            Block block = iblock.getBlock();
+
+            // I don't know, why we shouldn't use that here. Enlighten me, if you do. Thanks.
+            @SuppressWarnings("deprecation") IBlockState
+                    state =
+                    block.getStateFromMeta(item.getDamage(stack));
+
+            ConfigHandler.blockOverwrites.unset(BlockHelper.getKeyString(state));
+            ConfigHandler.blockOverwrites.save();
+
+            sendMessage(sender, "deleted the block overwrite for '" + TextFormatting.BOLD.toString
+                    () +
+                                stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
+                                ".");
+
+            sendMessage(sender, "needs to restart, in order to restore the default.");
+
+            return true;
+        }
+
+        return false;
     }
 
-    private void handleSet(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender,
-                           String itemclass, int level)
+    private boolean handleSet(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender,
+                              String itemclass, int level)
     {
         // FIXME Assuming singleplayer
         assert server.isSinglePlayer();
@@ -140,7 +170,7 @@ public class ToolProgressionCommand extends CommandBase
             sender.sendMessage(new TextComponentString(TextFormatting.RED +
                                                        "Can't set overwrite for an empty item."));
 
-            return;
+            return true;
         }
 
         Item item = stack.getItem();
@@ -165,8 +195,46 @@ public class ToolProgressionCommand extends CommandBase
                                 stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
                                 ".");
 
-            return;
+            return true;
         }
+
+        if (item instanceof ItemBlock)
+        {
+            ItemBlock iblock = (ItemBlock) item;
+            Block block = iblock.getBlock();
+
+            // I don't know, why we shouldn't use that here. Enlighten me, if you do. Thanks.
+            @SuppressWarnings("deprecation") IBlockState
+                    state =
+                    block.getStateFromMeta(item.getDamage(stack));
+
+            String key = BlockHelper.getKeyString(state);
+
+            BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(key);
+
+            if (overwrite == null)
+            {
+                overwrite = new BlockOverwrite(itemclass, level);
+            }
+            else
+            {
+                overwrite.addOverwrite(itemclass, level);
+            }
+
+            overwrite.apply(state);
+
+            ConfigHandler.blockOverwrites.set(key, overwrite);
+            ConfigHandler.blockOverwrites.save();
+
+            sendMessage(sender, "added the block overwrite for '" + TextFormatting.BOLD.toString
+                    () +
+                                stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
+                                ".");
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -177,20 +245,24 @@ public class ToolProgressionCommand extends CommandBase
 
         if (args.length == 1 && args[0].equals("reload"))
         {
-            handleReload(sender);
-
-            return;
+            if (handleReload(sender))
+            {
+                return;
+            }
         }
         else if (args.length == 1 && args[0].equals("unset"))
         {
-            handleUnset(server, sender);
-
-            return;
+            if (handleUnset(server, sender))
+            {
+                return;
+            }
         }
         else if (args.length == 3 && args[0].equals("set"))
         {
-            handleSet(server, sender, args[1], Integer.parseInt(args[2]));
-            return;
+            if (handleSet(server, sender, args[1], Integer.parseInt(args[2])))
+            {
+                return;
+            }
         }
 
         sender.sendMessage(new TextComponentString(TextFormatting.RED + "Error parsing command"));
