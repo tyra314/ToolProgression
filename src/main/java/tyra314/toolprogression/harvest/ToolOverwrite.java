@@ -3,9 +3,9 @@ package tyra314.toolprogression.harvest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.config.ConfigHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,21 @@ public class ToolOverwrite
 {
     private final Map<String, Integer> harvest_levels = new HashMap<>();
 
-    public final static Map<ResourceLocation, ToolOverwrite> overwrites = new HashMap<>();
+    public String getConfig()
+    {
+        StringBuilder res = new StringBuilder();
+        String prefix = "";
+
+        for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
+        {
+            res.append(prefix);
+            res.append(entry.getKey()).append('=').append(entry.getValue());
+
+            prefix = ",";
+        }
+
+        return res.toString();
+    }
 
     static String getConfig(Item item)
     {
@@ -50,10 +64,10 @@ public class ToolOverwrite
             return;
         }
 
-        if (overwrites.containsKey(item.getRegistryName()))
-        {
-            ToolOverwrite overwrite = overwrites.get(item.getRegistryName());
+        ToolOverwrite overwrite = ConfigHandler.toolOverwrites.get(item);
 
+        if (overwrite != null)
+        {
             overwrite.apply((ItemTool) item);
         }
     }
@@ -80,12 +94,12 @@ public class ToolOverwrite
         return overwrite;
     }
 
-    private void addOverwrite(String toolclass, int level)
+    public void addOverwrite(String toolclass, int level)
     {
         harvest_levels.put(toolclass, level);
     }
 
-    private void apply(ItemTool item)
+    public void apply(ItemTool item)
     {
         for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
         {

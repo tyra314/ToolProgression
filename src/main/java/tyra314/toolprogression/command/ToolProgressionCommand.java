@@ -5,7 +5,9 @@ import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -20,12 +22,16 @@ import tyra314.toolprogression.harvest.ToolOverwrite;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ToolProgressionCommand extends CommandBase
 {
     private final List<String> aliases = Lists.newArrayList(ToolProgressionMod.MODID);
+    private static final String[] COMMAND_COMPLETIONS = {"reload", "set", "unset"};
+    private static final String[] SET_COMPLETIONS = {"pickaxe", "axe", "shovel"};
+
 
     @Override
     public @Nonnull
@@ -38,7 +44,7 @@ public class ToolProgressionCommand extends CommandBase
     public @Nonnull
     String getUsage(@Nonnull ICommandSender sender)
     {
-        return "tpr reload";
+        return "tpr reload | set <class> <level> | unset";
     }
 
     @Override
@@ -48,16 +54,17 @@ public class ToolProgressionCommand extends CommandBase
         return aliases;
     }
 
-    @Override
-    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException
+    private void sendMessage(ICommandSender sender, String msg)
     {
-        if (args.length != 1 || !args[0].equals("reload"))
-        {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Error parsing command"));
+        sender.sendMessage(new TextComponentString(TextFormatting.YELLOW.toString() +
+                                                   TextFormatting.ITALIC.toString() +
+                                                   "ToolProgression " +
+                                                   TextFormatting.RESET.toString() +
+                                                   msg));
+    }
 
-            return;
-        }
-
+    private void handleReload(@Nonnull ICommandSender sender)
+    {
         ConfigHandler.readBaseConfig();
 
         final IForgeRegistry<Block> block_registry = GameRegistry.findRegistry(Block.class);
@@ -76,22 +83,159 @@ public class ToolProgressionCommand extends CommandBase
                 ToolOverwrite.applyToItem(item);
             }
         }
-        sender.sendMessage(new TextComponentString("§e§lToolProgression§r configuration reloaded."));
+        sendMessage(sender, "configuration reloaded.");
+    }
+
+    private void handleUnset(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender)
+    {
+        // FIXME Assuming singleplayer
+        assert server.isSinglePlayer();
+
+        EntityPlayer player = server.getPlayerList().getPlayers().get(0);
+
+
+        ItemStack stack = player.getHeldItemMainhand();
+
+
+        if (stack.isEmpty())
+        {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED +
+                                                       "Can't unset overwrite for an empty item."));
+
+            return;
+        }
+
+        Item item = stack.getItem();
+
+        if (item instanceof ItemTool)
+        {
+            ConfigHandler.toolOverwrites.unset(item);
+            ConfigHandler.toolOverwrites.save();
+
+            sendMessage(sender, "deleted the tool overwrite for '" + TextFormatting.BOLD.toString
+                    () +
+                                stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
+                                ".");
+
+            sendMessage(sender, " needs to restart, in order to restore this overwrite.");
+
+            return;
+        }
+    }
+
+    private void handleSet(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender,
+                           String itemclass, int level)
+    {
+        // FIXME Assuming singleplayer
+        assert server.isSinglePlayer();
+
+        EntityPlayer player = server.getPlayerList().getPlayers().get(0);
+
+
+        ItemStack stack = player.getHeldItemMainhand();
+
+
+        if (stack.isEmpty())
+        {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED +
+                                                       "Can't set overwrite for an empty item."));
+
+            return;
+        }
+
+        Item item = stack.getItem();
+
+        if (item instanceof ItemTool)
+        {
+            ToolOverwrite overwrite = ConfigHandler.toolOverwrites.get(item);
+
+            if (overwrite == null)
+            {
+                overwrite = new ToolOverwrite();
+            }
+
+            overwrite.addOverwrite(itemclass, level);
+            overwrite.apply((ItemTool) item);
+
+            ConfigHandler.toolOverwrites.set(item, overwrite);
+            ConfigHandler.toolOverwrites.save();
+
+            sendMessage(sender, "added the tool overwrite for '" + TextFormatting.BOLD.toString
+                    () +
+                                stack.getDisplayName() + TextFormatting.RESET.toString() + "' " +
+                                ".");
+
+            return;
+        }
+    }
+
+    @Override
+    public void execute(@Nonnull MinecraftServer server,
+                        @Nonnull ICommandSender sender,
+                        @Nonnull String[] args) throws CommandException
+    {
+
+        if (args.length == 1 && args[0].equals("reload"))
+        {
+            handleReload(sender);
+
+            return;
+        }
+        else if (args.length == 1 && args[0].equals("unset"))
+        {
+            handleUnset(server, sender);
+
+            return;
+        }
+        else if (args.length == 3 && args[0].equals("set"))
+        {
+            handleSet(server, sender, args[1], Integer.parseInt(args[2]));
+            return;
+        }
+
+        sender.sendMessage(new TextComponentString(TextFormatting.RED + "Error parsing command"));
     }
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-        return true;
+        return server.isSinglePlayer();
+    }
+
+    private List<String> completeTo(String input, String[] completions)
+    {
+        List<String> comps = new ArrayList<>();
+
+        for (String comp : completions)
+        {
+            if (comp.startsWith(input))
+            {
+                comps.add(comp);
+            }
+        }
+
+        return comps;
     }
 
     @Override
     public @Nonnull
-    List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args, @Nullable BlockPos targetPos)
+    List<String> getTabCompletions(@Nonnull MinecraftServer server,
+                                   @Nonnull ICommandSender sender,
+                                   @Nonnull String[] args,
+                                   @Nullable BlockPos targetPos)
     {
-        if ("reload".startsWith(args[0]) && args.length < 2)
+        List<String> comp = completeTo(args[0], COMMAND_COMPLETIONS);
+
+        if (comp.size() > 0 && args.length < 2)
         {
-            return Lists.newArrayList("reload");
+            return comp;
+        }
+
+        if (args.length == 2 && comp.contains("set"))
+        {
+            List<String> itemClass = completeTo(args[1], SET_COMPLETIONS);
+
+            return itemClass;
         }
 
         return Collections.emptyList();

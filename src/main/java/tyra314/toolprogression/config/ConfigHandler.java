@@ -1,6 +1,5 @@
 package tyra314.toolprogression.config;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
@@ -8,7 +7,6 @@ import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestLevel;
-import tyra314.toolprogression.harvest.ToolOverwrite;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 import java.util.Map;
@@ -24,6 +22,9 @@ public class ConfigHandler
     public static boolean waila_enabled = true;
     public static boolean waila_show_harvestable = false;
 
+    public static ToolOverwriteConfig
+            toolOverwrites =
+            new ToolOverwriteConfig(CommonProxy.tool_overwrites_config);
 
     public static void readBaseConfig()
     {
@@ -31,7 +32,6 @@ public class ConfigHandler
         Configuration level_names_cfg = CommonProxy.mining_level_config;
 
         Configuration block_overwrites_config = CommonProxy.block_overwrites_config;
-        Configuration tool_overwrites_config = CommonProxy.tool_overwrites_config;
 
         try
         {
@@ -39,12 +39,12 @@ public class ConfigHandler
             level_names_cfg.load();
 
             block_overwrites_config.load();
-            tool_overwrites_config.load();
 
             initGeneralConfig(base_cfg);
             initMiningLevelConfig(level_names_cfg);
             initBlockOverwriteConfig(block_overwrites_config);
-            initToolOverwriteConfig(tool_overwrites_config);
+
+            toolOverwrites.load();
 
         } catch (Exception e1)
         {
@@ -66,10 +66,7 @@ public class ConfigHandler
                 block_overwrites_config.save();
             }
 
-            if (tool_overwrites_config.hasChanged())
-            {
-                tool_overwrites_config.save();
-            }
+
         }
     }
 
@@ -117,17 +114,4 @@ public class ConfigHandler
             }
         }
     }
-
-    private static void initToolOverwriteConfig(Configuration cfg)
-    {
-        cfg.addCustomCategoryComment("tool", "To add any overwrites, simply copy them over from the tools.cfg");
-
-        for (Map.Entry<String, Property> tool : cfg.getCategory("tool").entrySet())
-        {
-            ResourceLocation rl = new ResourceLocation(tool.getKey());
-            ToolOverwrite overwrite = ToolOverwrite.readFromConfig(tool.getValue().getString());
-            ToolOverwrite.overwrites.put(rl, overwrite);
-        }
-    }
-
 }
