@@ -76,7 +76,7 @@ public class BlockOverwriteConfig
         }
         catch (Exception e)
         {
-            ToolProgressionMod.logger.log(Level.ERROR, "Problem saving tool overwrites file!", e);
+            ToolProgressionMod.logger.log(Level.ERROR, "Problem saving block overwrites file!", e);
         }
         finally
         {
