@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 public class OverwriteHelper
@@ -33,5 +34,15 @@ public class OverwriteHelper
         CommonProxy.tools_config.getString(item.getRegistryName().toString(), "tool", config, item.getItemStackDisplayName(new ItemStack(item)));
 
         ToolOverwrite.applyToItem(item);
+    }
+
+    public static void handleMaterial(ItemTool.ToolMaterial mat)
+    {
+        String config = MaterialHelper.getConfig(mat);
+        String name = MaterialHelper.getName(mat);
+
+        CommonProxy.mats_config.getString(name, "material", config, name);
+
+        MaterialOverwrite.applyToMaterial(mat);
     }
 }

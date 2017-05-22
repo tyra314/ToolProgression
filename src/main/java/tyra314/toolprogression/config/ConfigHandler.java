@@ -24,6 +24,9 @@ public class ConfigHandler
     public static BlockOverwriteConfig blockOverwrites = new BlockOverwriteConfig(CommonProxy
             .block_overwrites_config);
 
+    public static MaterialOverwriteConfig matOverwrites = new MaterialOverwriteConfig(CommonProxy
+            .mat_overwrites_config);
+
     public static void readBaseConfig()
     {
         Configuration base_cfg = CommonProxy.base_config;
@@ -43,6 +46,7 @@ public class ConfigHandler
 
             blockOverwrites.load();
             toolOverwrites.load();
+            matOverwrites.load();
         }
         catch (Exception e1)
         {

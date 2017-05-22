@@ -43,6 +43,12 @@ public class HarvestEventHandler
         if (toolclass != null && item.getItem() instanceof ItemTool)
         {
             int level = item.getItem().getHarvestLevel(item, toolclass, event.getEntityPlayer(), state);
+
+            if (level == -1)
+            {
+                level = ((ItemTool) item.getItem()).getToolMaterial().getHarvestLevel();
+            }
+
             event.setCanceled(level < required_level);
 
             return;

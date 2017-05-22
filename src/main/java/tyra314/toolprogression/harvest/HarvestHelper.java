@@ -35,6 +35,11 @@ public class HarvestHelper
         {
             int level = item.getItem().getHarvestLevel(item, toolclass, player, state);
 
+            if (level == -1)
+            {
+                level = ((ItemTool) item.getItem()).getToolMaterial().getHarvestLevel();
+            }
+
             return level >= required_level;
         }
 

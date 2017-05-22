@@ -21,6 +21,7 @@ import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
+import tyra314.toolprogression.harvest.MaterialOverwrite;
 import tyra314.toolprogression.harvest.ToolOverwrite;
 
 import javax.annotation.Nonnull;
@@ -86,6 +87,12 @@ public class ToolProgressionCommand extends CommandBase
                 ToolOverwrite.applyToItem(item);
             }
         }
+
+        for (ItemTool.ToolMaterial mat : ItemTool.ToolMaterial.values())
+        {
+            MaterialOverwrite.applyToMaterial(mat);
+        }
+
         sendMessage(sender, "configuration reloaded.");
 
         return true;
