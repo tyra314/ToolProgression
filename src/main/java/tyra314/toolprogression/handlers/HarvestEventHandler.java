@@ -40,11 +40,11 @@ public class HarvestEventHandler
 
         String toolclass = state.getBlock().getHarvestTool(state);
 
-        if (toolclass != null && item.getItem() instanceof ItemTool)
+        if (toolclass != null)
         {
             int level = item.getItem().getHarvestLevel(item, toolclass, event.getEntityPlayer(), state);
 
-            if (level == -1)
+            if (level == -1 && item.getItem() instanceof ItemTool)
             {
                 level = ((ItemTool) item.getItem()).getToolMaterial().getHarvestLevel();
             }

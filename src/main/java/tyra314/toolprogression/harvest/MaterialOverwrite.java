@@ -36,4 +36,9 @@ public class MaterialOverwrite
     {
         MaterialHelper.setHarvestLevel(mat, harvestLevel);
     }
+
+    public int getHarvestLevel()
+    {
+        return harvestLevel;
+    }
 }

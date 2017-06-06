@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.compat.tconstruct.TCHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.handlers.HarvestEventHandler;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
@@ -62,13 +63,16 @@ public class CommonProxy
 
         ConfigHandler.readBaseConfig();
 
+        if (TCHelper.isTCLoaded())
+        {
+            TCHelper.preInit();
+        }
     }
 
     public void init(@SuppressWarnings("unused") FMLInitializationEvent e)
     {
         MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
         MinecraftForge.EVENT_BUS.register(new HarvestEventHandler());
-
     }
 
     public void postInit(@SuppressWarnings("unused") FMLPostInitializationEvent e)
