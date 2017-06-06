@@ -14,7 +14,6 @@ public class TCEventHandler
     {
         String name = event.material.identifier;
 
-        ToolProgressionMod.logger.info("Material registered: " + name);
 
         if (event.stats instanceof HeadMaterialStats)
         {
@@ -23,6 +22,7 @@ public class TCEventHandler
             CommonProxy.mats_config.getString(name, "material", String.valueOf(stats
                     .harvestLevel), name);
 
+            ToolProgressionMod.logger.info("TiC Material registered: " + name);
 
             if (TCMaterial.hasOverwrite(event.material.identifier))
             {
@@ -31,6 +31,9 @@ public class TCEventHandler
                         stats.miningspeed,
                         stats.attack,
                         newLevel));
+
+                ToolProgressionMod.logger.info("TiC Material overwrite: " +
+                                               String.valueOf(newLevel));
             }
         }
     }

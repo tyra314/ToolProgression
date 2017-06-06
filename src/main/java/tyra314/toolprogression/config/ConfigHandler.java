@@ -102,13 +102,17 @@ public class ConfigHandler
                 if (tcmininglevels != null)
                 {
                     tcmininglevels.put(level.getLevel(), level.getFormatted());
-                    ToolProgressionMod.logger.log(Level.INFO, "Applied compat for TCMiningLevels");
                 }
             }
             else
             {
                 ToolProgressionMod.logger.log(Level.WARN, "Problem parsing harvest level: ", name);
             }
+        }
+
+        if (tcmininglevels != null)
+        {
+            ToolProgressionMod.logger.log(Level.INFO, "Applied compat for TiC mining levels");
         }
 
         ToolProgressionMod.logger.log(Level.INFO, "Done applying mining levels.");
