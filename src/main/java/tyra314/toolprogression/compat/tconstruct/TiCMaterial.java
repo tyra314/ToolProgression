@@ -3,7 +3,7 @@ package tyra314.toolprogression.compat.tconstruct;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.MaterialOverwrite;
 
-public class TCMaterial
+public class TiCMaterial
 {
     public static boolean hasOverwrite(String identifier)
     {

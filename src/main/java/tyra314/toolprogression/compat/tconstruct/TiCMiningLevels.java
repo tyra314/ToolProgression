@@ -5,7 +5,7 @@ import tyra314.toolprogression.config.ConfigHandler;
 
 import java.util.Map;
 
-public class TCMiningLevels
+public class TiCMiningLevels
 {
     public static Map<Integer, String> getMiningLevels()
     {

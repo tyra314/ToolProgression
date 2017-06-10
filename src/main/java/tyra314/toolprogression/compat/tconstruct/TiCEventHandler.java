@@ -7,7 +7,7 @@ import slimeknights.tconstruct.library.materials.IMaterialStats;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.proxy.CommonProxy;
 
-public class TCEventHandler
+public class TiCEventHandler
 {
     @SubscribeEvent
     public void handleMaterial(MaterialEvent.StatRegisterEvent<IMaterialStats> event)
@@ -24,9 +24,9 @@ public class TCEventHandler
 
             ToolProgressionMod.logger.info("TiC Material registered: " + name);
 
-            if (TCMaterial.hasOverwrite(event.material.identifier))
+            if (TiCMaterial.hasOverwrite(event.material.identifier))
             {
-                int newLevel = TCMaterial.getOverwrite(event.material.identifier);
+                int newLevel = TiCMaterial.getOverwrite(event.material.identifier);
                 event.overrideResult(new HeadMaterialStats(stats.durability,
                         stats.miningspeed,
                         stats.attack,
