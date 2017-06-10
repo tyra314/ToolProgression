@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
+import tyra314.toolprogression.compat.waila.WailaPlugin;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.handlers.HarvestEventHandler;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
@@ -67,6 +68,8 @@ public class CommonProxy
         {
             TiCHelper.preInit();
         }
+
+        WailaPlugin.preInit();
     }
 
     public void init(@SuppressWarnings("unused") FMLInitializationEvent e)

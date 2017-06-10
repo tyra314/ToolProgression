@@ -46,6 +46,10 @@ repositories {
     maven { // TConstruct
         url 'http://dvs1.progwml6.com/files/maven'
     }
+
+    maven { // WAILA
+        url 'http://mobiusstrip.eu/maven'
+    }
 }
 
 dependencies {
@@ -53,6 +57,9 @@ dependencies {
     deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
 
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+
+    //deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
+
 
     runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 }
