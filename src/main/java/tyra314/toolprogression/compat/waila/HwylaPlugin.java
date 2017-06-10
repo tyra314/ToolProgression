@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
 import tyra314.toolprogression.config.ConfigHandler;
 
 @mcp.mobius.waila.api.WailaPlugin
-public class HywlaPlugin implements IWailaPlugin
+public class HwylaPlugin implements IWailaPlugin
 {
     @Override
     public void register(IWailaRegistrar registrar)
