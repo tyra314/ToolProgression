@@ -4,7 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class TiCHelper
 {
-    public static boolean isTCLoaded()
+    public static boolean isLoaded()
     {
         try
         {
