@@ -1,4 +1,4 @@
-package tyra314.toolprogression.plugin;
+package tyra314.toolprogression.compat.waila;
 
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;

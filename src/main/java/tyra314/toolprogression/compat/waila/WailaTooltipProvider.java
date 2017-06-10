@@ -1,4 +1,4 @@
-package tyra314.toolprogression.plugin;
+package tyra314.toolprogression.compat.waila;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -28,26 +28,38 @@ class WailaTooltipProvider implements IWailaDataProvider
 
     @Nonnull
     @Override
-    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+    public List<String> getWailaHead(ItemStack itemStack,
+                                     List<String> currenttip,
+                                     IWailaDataAccessor accessor,
+                                     IWailaConfigHandler config)
     {
         return currenttip;
     }
 
     @Nonnull
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+    public List<String> getWailaBody(ItemStack itemStack,
+                                     List<String> currenttip,
+                                     IWailaDataAccessor accessor,
+                                     IWailaConfigHandler config)
     {
         return currenttip;
     }
 
     @Nonnull
     @Override
-    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+    public List<String> getWailaTail(ItemStack itemStack,
+                                     List<String> currenttip,
+                                     IWailaDataAccessor accessor,
+                                     IWailaConfigHandler config)
     {
 
         String tool = accessor.getBlock().getHarvestTool(accessor.getBlockState());
         ItemStack active_tool = accessor.getPlayer().getHeldItemMainhand();
 
-        if (accessor.getBlock() != Blocks.BEDROCK && HarvestHelper.canItemHarvestBlock(accessor.getPlayer(), accessor.getBlockState(), accessor.getWorld(), accessor.getPosition()))
+        HarvestHelper.Reason r = HarvestHelper.canPlayerHarvestReason(accessor.getPlayer(), accessor
+                .getBlockState(), accessor.getWorld(), accessor.getPosition());
+
+        if (accessor.getBlock() != Blocks.BEDROCK && r == HarvestHelper.Reason.NONE)
         {
             if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
             {
@@ -59,27 +71,30 @@ class WailaTooltipProvider implements IWailaDataProvider
             {
                 currenttip.add(0, "Harvestable : §2yes");
             }
-        } else
+        }
+        else
         {
-            if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
+            if (tool != null && r == HarvestHelper.Reason.TOOL_CLASS)
             {
                 currenttip.add(0, String.format("Required Tool : §4%s", tool));
 
-            } else
+            }
+            else
             {
                 if (tool != null)
                 {
-                    int required_level = accessor.getBlock().getHarvestLevel(accessor.getBlockState());
-                    int level = active_tool.getItem().getHarvestLevel(active_tool, tool, accessor.getPlayer(), accessor.getBlockState());
-
-                    if (required_level > level)
+                    if (r == HarvestHelper.Reason.LEVEL)
                     {
                         String harvest_level;
+                        int
+                                required_level =
+                                accessor.getBlock().getHarvestLevel(accessor.getBlockState());
 
                         if (HarvestLevel.levels.containsKey(required_level))
                         {
                             harvest_level = HarvestLevel.levels.get(required_level).getFormatted();
-                        } else
+                        }
+                        else
                         {
                             harvest_level = String.valueOf(required_level);
                         }
@@ -99,7 +114,11 @@ class WailaTooltipProvider implements IWailaDataProvider
 
     @Nonnull
     @Override
-    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos)
+    public NBTTagCompound getNBTData(EntityPlayerMP player,
+                                     TileEntity te,
+                                     NBTTagCompound tag,
+                                     World world,
+                                     BlockPos pos)
     {
         return tag;
     }
