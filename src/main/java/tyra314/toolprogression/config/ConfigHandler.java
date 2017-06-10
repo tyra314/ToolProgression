@@ -3,7 +3,7 @@ package tyra314.toolprogression.config;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
-import tyra314.toolprogression.compat.tconstruct.TCMiningLevels;
+import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.HarvestLevel;
 import tyra314.toolprogression.proxy.CommonProxy;
@@ -17,7 +17,6 @@ public class ConfigHandler
     private static final String CATEGORY_COMPAT = "compat";
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
-    private static final String CATEGORY_WAILA = "waila";
 
     public static boolean waila_enabled = true;
     public static boolean waila_show_harvestable = false;
@@ -82,7 +81,7 @@ public class ConfigHandler
         String[] names = {"0:Wood", "1:Stone:§8%s", "2:Iron:§f%s", "3:Diamond:§b%s"};
         names = cfg.getStringList("names", CATEGORY_MINING_LEVEL, names, "Canonical names");
 
-        Map<Integer, String> tcmininglevels = TCMiningLevels.getMiningLevels();
+        Map<Integer, String> tcmininglevels = TiCMiningLevels.getMiningLevels();
 
         if (tcmininglevels != null)
         {
@@ -129,18 +128,18 @@ public class ConfigHandler
                         TooltipEventHandler.enabled,
                         "Set this to true if you like to get extended tooltips.");
 
+        cfg.addCustomCategoryComment(CATEGORY_COMPAT, "Mod compatibility configuration");
+
         waila_enabled =
                 cfg.getBoolean("enabled",
-                        CATEGORY_WAILA,
+                        CATEGORY_COMPAT,
                         waila_enabled,
                         "Set this to true to enable the built-in WAILA plugin.");
         waila_show_harvestable =
                 cfg.getBoolean("show_harvestable",
-                        CATEGORY_WAILA,
+                        CATEGORY_COMPAT,
                         waila_show_harvestable,
                         "Set this to true to always show harvestability.");
-
-        cfg.addCustomCategoryComment(CATEGORY_COMPAT, "Mod compatibility configuration");
 
         tconstruct_overwrite = cfg.getBoolean("tconstruct", CATEGORY_COMPAT,
                 tconstruct_overwrite, "Set this to false, to leave Tinkers alone.");

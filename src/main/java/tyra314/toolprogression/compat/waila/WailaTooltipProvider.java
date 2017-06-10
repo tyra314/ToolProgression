@@ -56,15 +56,14 @@ class WailaTooltipProvider implements IWailaDataProvider
         String tool = accessor.getBlock().getHarvestTool(accessor.getBlockState());
         ItemStack active_tool = accessor.getPlayer().getHeldItemMainhand();
 
-        HarvestHelper.Reason r = HarvestHelper.canPlayerHarvestReason(accessor.getPlayer(), accessor
+        HarvestHelper.Result r = HarvestHelper.canPlayerHarvestReason(accessor.getPlayer(), accessor
                 .getBlockState(), accessor.getWorld(), accessor.getPosition());
 
-        if (accessor.getBlock() != Blocks.BEDROCK && r == HarvestHelper.Reason.NONE)
+        if (accessor.getBlock() != Blocks.BEDROCK && r == HarvestHelper.Result.NONE)
         {
             if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
             {
                 currenttip.add(0, String.format("Effective Tool : §4%s", tool));
-
             }
 
             if (ConfigHandler.waila_show_harvestable)
@@ -74,40 +73,27 @@ class WailaTooltipProvider implements IWailaDataProvider
         }
         else
         {
-            if (tool != null && r == HarvestHelper.Reason.TOOL_CLASS)
+            if (tool != null && r == HarvestHelper.Result.TOOL_CLASS)
             {
                 currenttip.add(0, String.format("Required Tool : §4%s", tool));
 
             }
-            else
+            else if (tool != null && r == HarvestHelper.Result.LEVEL)
             {
-                if (tool != null)
+                int required_level = accessor.getBlock().getHarvestLevel(accessor.getBlockState());
+
+                String harvest_level = String.valueOf(required_level);
+
+                if (HarvestLevel.levels.containsKey(required_level))
                 {
-                    if (r == HarvestHelper.Reason.LEVEL)
-                    {
-                        String harvest_level;
-                        int
-                                required_level =
-                                accessor.getBlock().getHarvestLevel(accessor.getBlockState());
-
-                        if (HarvestLevel.levels.containsKey(required_level))
-                        {
-                            harvest_level = HarvestLevel.levels.get(required_level).getFormatted();
-                        }
-                        else
-                        {
-                            harvest_level = String.valueOf(required_level);
-                        }
-
-                        currenttip.add(0, String.format("Harvest Level : %s", harvest_level));
-                    }
-
+                    harvest_level = HarvestLevel.levels.get(required_level).getFormatted();
                 }
+
+                currenttip.add(0, String.format("Harvest Level : %s", harvest_level));
             }
 
             currenttip.add(0, "Harvestable : §4no");
         }
-
 
         return currenttip;
     }

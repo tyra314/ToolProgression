@@ -1,11 +1,13 @@
 package tyra314.toolprogression.config;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 
 import java.util.HashMap;
@@ -92,6 +94,12 @@ public class BlockOverwriteConfig
         }
 
         return null;
+    }
+
+
+    public BlockOverwrite get(IBlockState state)
+    {
+        return get(BlockHelper.getKeyString(state));
     }
 
 

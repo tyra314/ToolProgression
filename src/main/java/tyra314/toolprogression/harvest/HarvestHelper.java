@@ -10,23 +10,37 @@ import tyra314.toolprogression.config.ConfigHandler;
 
 public class HarvestHelper
 {
-    public static boolean canItemHarvestBlock(EntityPlayer player, IBlockState state, World world, BlockPos pos)
+    public enum Result
+    {
+        TOOL_CLASS,
+        LEVEL,
+        NONE
+    }
+
+    public static Result canPlayerHarvestReason(EntityPlayer player,
+                                                IBlockState state,
+                                                World world,
+                                                BlockPos pos)
     {
         ItemStack item = player.getHeldItemMainhand();
 
-        BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(BlockHelper.getKeyString
-                (state));
+        BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
 
         if (overwrite == null)
         {
-            return state.getBlock().canHarvestBlock(world, pos, player);
+            boolean result = state.getBlock().canHarvestBlock(world, pos, player);
+
+            if (result)
+            {
+                return Result.NONE;
+            }
         }
 
         int required_level = state.getBlock().getHarvestLevel(state);
 
         if (item.isEmpty())
         {
-            return required_level < 0;
+            return required_level < 0 ? Result.NONE : Result.TOOL_CLASS;
         }
 
         String toolclass = state.getBlock().getHarvestTool(state);
@@ -40,9 +54,18 @@ public class HarvestHelper
                 level = ((ItemTool) item.getItem()).getToolMaterial().getHarvestLevel();
             }
 
-            return level >= required_level;
+            return level >= required_level ? Result.NONE : Result.LEVEL;
         }
 
-        return required_level < 0;
+        return required_level < 0 ? Result.NONE : Result.TOOL_CLASS;
+    }
+
+
+    public static boolean canPlayerHarvestBlock(EntityPlayer player,
+                                                IBlockState state,
+                                                World world,
+                                                BlockPos pos)
+    {
+        return canPlayerHarvestReason(player, state, world, pos) == Result.NONE;
     }
 }
