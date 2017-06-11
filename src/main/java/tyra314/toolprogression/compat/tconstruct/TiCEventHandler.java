@@ -1,15 +1,8 @@
 package tyra314.toolprogression.compat.tconstruct;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import slimeknights.tconstruct.library.events.MaterialEvent;
-import slimeknights.tconstruct.library.materials.HeadMaterialStats;
-import slimeknights.tconstruct.library.materials.IMaterialStats;
-import tyra314.toolprogression.ToolProgressionMod;
-import tyra314.toolprogression.proxy.CommonProxy;
-
 public class TiCEventHandler
 {
-    @SubscribeEvent
+/*    @SubscribeEvent
     public void handleMaterial(MaterialEvent.StatRegisterEvent<IMaterialStats> event)
     {
         String name = event.material.identifier;
@@ -36,5 +29,5 @@ public class TiCEventHandler
                                                String.valueOf(newLevel));
             }
         }
-    }
+    }*/
 }

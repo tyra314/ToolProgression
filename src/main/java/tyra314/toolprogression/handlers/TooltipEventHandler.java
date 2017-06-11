@@ -20,7 +20,7 @@ public class TooltipEventHandler
         if (level == -1 && item instanceof ItemTool && item.getToolClasses(event.getItemStack()).contains("pickaxe"))
         {
             ItemTool tool = (ItemTool) item;
-            level = tool.getToolMaterial().getHarvestLevel();
+            level = tool.getHarvestLevel(event.getItemStack(), "pickaxe", null, null);
         }
 
         if (level == -1)

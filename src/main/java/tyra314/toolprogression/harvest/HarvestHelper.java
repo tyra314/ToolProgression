@@ -3,7 +3,6 @@ package tyra314.toolprogression.harvest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import tyra314.toolprogression.config.ConfigHandler;
@@ -48,11 +47,6 @@ public class HarvestHelper
         if (toolclass != null)
         {
             int level = item.getItem().getHarvestLevel(item, toolclass, player, state);
-
-            if (level == -1 && item.getItem() instanceof ItemTool)
-            {
-                level = ((ItemTool) item.getItem()).getToolMaterial().getHarvestLevel();
-            }
 
             return level >= required_level ? Result.NONE : Result.LEVEL;
         }
