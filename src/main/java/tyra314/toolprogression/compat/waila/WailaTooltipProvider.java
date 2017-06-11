@@ -3,6 +3,8 @@ package tyra314.toolprogression.compat.waila;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -17,8 +19,16 @@ import tyra314.toolprogression.harvest.HarvestLevel;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-class WailaTooltipProvider implements IWailaDataProvider
+public class WailaTooltipProvider implements IWailaDataProvider
 {
+    public static void register(IWailaRegistrar registrar)
+    {
+        if (ConfigHandler.waila_enabled)
+        {
+            registrar.registerTailProvider(new WailaTooltipProvider(), Block.class);
+        }
+    }
+
     @Nonnull
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
