@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockHelper;
