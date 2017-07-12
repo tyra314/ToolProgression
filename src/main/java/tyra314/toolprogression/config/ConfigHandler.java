@@ -4,7 +4,6 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
-import tyra314.toolprogression.handlers.TooltipEventHandler;
 import tyra314.toolprogression.harvest.HarvestLevel;
 import tyra314.toolprogression.proxy.CommonProxy;
 
@@ -17,6 +16,8 @@ public class ConfigHandler
     private static final String CATEGORY_COMPAT = "compat";
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
+
+    public static boolean tooltip_enabled = true;
 
     public static boolean waila_enabled = true;
     public static boolean waila_show_harvestable = false;
@@ -122,10 +123,10 @@ public class ConfigHandler
     {
         cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
 
-        TooltipEventHandler.enabled =
+        tooltip_enabled =
                 cfg.getBoolean("enabled",
                         CATEGORY_TOOLTIP,
-                        TooltipEventHandler.enabled,
+                        tooltip_enabled,
                         "Set this to true if you like to get extended tooltips.");
 
         cfg.addCustomCategoryComment(CATEGORY_COMPAT, "Mod compatibility configuration");
