@@ -53,8 +53,8 @@ repositories {
 }
 
 dependencies {
-    //deobfCompile "slimeknights:TConstruct:${tc_version}"
-    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    deobfCompile "slimeknights:TConstruct:${tc_version}"
+    deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
 
     deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
 
