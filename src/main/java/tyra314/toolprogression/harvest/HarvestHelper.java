@@ -25,7 +25,9 @@ public class HarvestHelper
 
         BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
 
-        if (overwrite == null)
+        boolean faked_state = world.getBlockState(pos) != state;
+
+        if (overwrite == null && !faked_state)
         {
             boolean result = state.getBlock().canHarvestBlock(world, pos, player);
 
