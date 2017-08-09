@@ -12,7 +12,7 @@ public class OverwriteHelper
     {
         for (IBlockState state : block.getBlockState().getValidStates())
         {
-            String config = BlockHelper.getConfig(state);
+            String config = BlockHelper.getConfigString(state);
 
             CommonProxy.blocks_config.getString(BlockHelper.getKeyString(state),
                     "block",

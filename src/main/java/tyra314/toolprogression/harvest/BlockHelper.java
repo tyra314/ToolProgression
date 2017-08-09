@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 public class BlockHelper
 {
-    static String getConfig(IBlockState state)
+    static String getConfigString(IBlockState state)
     {
         if (state.getMaterial().isToolNotRequired())
         {
