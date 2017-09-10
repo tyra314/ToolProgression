@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
+import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.compat.waila.WailaPlugin;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.handlers.HarvestEventHandler;
@@ -74,6 +75,11 @@ public class CommonProxy
     public void init(@SuppressWarnings("unused") FMLInitializationEvent e)
     {
         MinecraftForge.EVENT_BUS.register(new HarvestEventHandler());
+
+        if (TiCHelper.isLoaded())
+        {
+            TiCMiningLevels.overwriteMiningLevels();
+        }
     }
 
     public void postInit(@SuppressWarnings("unused") FMLPostInitializationEvent e)

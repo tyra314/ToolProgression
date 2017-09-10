@@ -82,12 +82,6 @@ public class ConfigHandler
         String[] names = {"0:Wood", "1:Stone:§8%s", "2:Iron:§f%s", "3:Diamond:§b%s"};
         names = cfg.getStringList("names", CATEGORY_MINING_LEVEL, names, "Canonical names");
 
-        Map<Integer, String> tcmininglevels = TiCMiningLevels.getMiningLevels();
-
-        if (tcmininglevels != null)
-        {
-            tcmininglevels.clear();
-        }
 
         for (String name : names)
         {
@@ -98,11 +92,6 @@ public class ConfigHandler
 
                 ToolProgressionMod.logger.log(Level.INFO, String.format("Mining level: %d - %s",
                         level.getLevel(), level.getName()));
-
-                if (tcmininglevels != null)
-                {
-                    tcmininglevels.put(level.getLevel(), level.getFormatted());
-                }
             }
             else
             {
@@ -110,13 +99,7 @@ public class ConfigHandler
             }
         }
 
-        if (tcmininglevels != null)
-        {
-            ToolProgressionMod.logger.log(Level.INFO, "Applied compat for TiC mining levels");
-        }
-
         ToolProgressionMod.logger.log(Level.INFO, "Done applying mining levels.");
-
     }
 
     private static void initGeneralConfig(Configuration cfg)

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import tyra314.toolprogression.command.ToolProgressionCommand;
 import tyra314.toolprogression.proxy.CommonProxy;
 
-@Mod(modid = ToolProgressionMod.MODID, version = ToolProgressionMod.VERSION, dependencies = "after:tconstruct", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = ToolProgressionMod.MODID, version = ToolProgressionMod.VERSION, dependencies = "before:tconstruct", acceptedMinecraftVersions = "[1.12,1.13)")
 public class ToolProgressionMod
 {
     public static final String MODID = "toolprogression";
