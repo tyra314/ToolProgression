@@ -17,7 +17,7 @@ public class TiCMiningLevels
         try
         {
             Class clazz = Class.forName("slimeknights.tconstruct.library.utils.HarvestLevels");
-            if (clazz != null && ConfigHandler.tconstruct_overwrite)
+            if (clazz != null)
             {
                 miningLevels = (Map<Integer, String>) clazz.getField("harvestLevelNames")
                         .get(null);
@@ -33,7 +33,19 @@ public class TiCMiningLevels
 
     public static void overwriteMiningLevels()
     {
+        if (!ConfigHandler.tconstruct_overwrite)
+        {
+            return;
+        }
+
         Map<Integer, String> tcmininglevels = TiCMiningLevels.getMiningLevels();
+
+        if ( tcmininglevels == null)
+        {
+            ToolProgressionMod.logger.log(Level.WARN, "Couldn't apply compat for TiC mining levels :(");
+
+            return;
+        }
 
         tcmininglevels.clear();
 
