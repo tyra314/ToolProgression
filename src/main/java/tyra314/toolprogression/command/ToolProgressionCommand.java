@@ -18,6 +18,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.compat.tconstruct.TiCHelper;
+import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
@@ -93,6 +95,11 @@ public class ToolProgressionCommand extends CommandBase
             MaterialOverwrite.applyToMaterial(mat);
         }
 
+        if (TiCHelper.isLoaded())
+        {
+            TiCMiningLevels.overwriteMiningLevels();
+        }
+
         sendMessage(sender, "configuration reloaded.");
 
         return true;
@@ -100,9 +107,6 @@ public class ToolProgressionCommand extends CommandBase
 
     private boolean handleUnset(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender)
     {
-        // FIXME Assuming singleplayer
-        assert server.isSinglePlayer();
-
         EntityPlayer player = server.getPlayerList().getPlayers().get(0);
 
 
@@ -163,9 +167,6 @@ public class ToolProgressionCommand extends CommandBase
     private boolean handleSet(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender,
                               String itemclass, int level)
     {
-        // FIXME Assuming singleplayer
-        assert server.isSinglePlayer();
-
         EntityPlayer player = server.getPlayerList().getPlayers().get(0);
 
 
@@ -249,7 +250,6 @@ public class ToolProgressionCommand extends CommandBase
                         @Nonnull ICommandSender sender,
                         @Nonnull String[] args) throws CommandException
     {
-
         if (args.length == 1 && args[0].equals("reload"))
         {
             if (handleReload(sender))
@@ -278,6 +278,11 @@ public class ToolProgressionCommand extends CommandBase
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
+        if(!server.isSinglePlayer())
+        {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED + "I'm sorry, but this command can only be used in single player mode."));
+        }
+
         return server.isSinglePlayer();
     }
 
