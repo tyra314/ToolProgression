@@ -24,7 +24,7 @@ import java.io.File;
 public class CommonProxy
 {
 
-    // ConfigHandler instance
+    // ConfigHandler INSTANCE
     public static Configuration base_config;
     public static Configuration mining_level_config;
 
@@ -78,6 +78,7 @@ public class CommonProxy
 
         if (TiCHelper.isLoaded())
         {
+            TiCHelper.init();
             TiCMiningLevels.overwriteMiningLevels();
         }
     }

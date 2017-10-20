@@ -1,0 +1,11 @@
+[
+  {
+    "name": "modifiers",
+    "data": "sections/modifiers.json",
+    "icon": {
+      "item": {
+        "id": "toolprogression:magic_mushroom"
+      }
+    }
+  }
+]

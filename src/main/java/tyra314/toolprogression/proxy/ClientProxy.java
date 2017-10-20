@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.handlers.TooltipEventHandler;
 
 
@@ -19,5 +20,10 @@ public class ClientProxy extends CommonProxy
 		super.init(e);
 
 		MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
+
+		if(TiCHelper.isLoaded())
+		{
+			TiCHelper.client_init();
+		}
 	}
 }

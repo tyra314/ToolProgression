@@ -24,7 +24,7 @@ public class ToolProgressionMod
 
     @SuppressWarnings("unused")
     @Mod.Instance
-    public static ToolProgressionMod instance;
+    public static ToolProgressionMod INSTANCE;
 
     public static final Logger logger = LogManager.getLogger(MODID);
 

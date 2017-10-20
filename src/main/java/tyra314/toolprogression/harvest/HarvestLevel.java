@@ -27,13 +27,13 @@ public class HarvestLevel
         return null;
     }
 
-    private HarvestLevel(int level, String name)
+    public HarvestLevel(int level, String name)
     {
         this.level = level;
         this.name = name;
     }
 
-    private HarvestLevel(int level, String name, String format)
+    public HarvestLevel(int level, String name, String format)
     {
         this.level = level;
         this.name = name;

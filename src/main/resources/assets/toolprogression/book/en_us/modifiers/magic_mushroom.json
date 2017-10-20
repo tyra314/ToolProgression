@@ -1,0 +1,17 @@
+{
+  "modifier": "magicmushroom",
+  "text": [
+    {
+      "text": "This amazing mushroom can magically increase the capabilities of your tools."
+    }
+  ],
+  "effects": [
+    "Mining level increased by one",
+    "Single use",
+    "Magically!"
+  ],
+  "demoTool": [
+    "tconstruct:pickaxe",
+    "tconstruct:hammer"
+  ]
+}
