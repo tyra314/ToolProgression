@@ -9,6 +9,7 @@ import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.modifiers.IModifier;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.utils.TagUtil;
+import slimeknights.tconstruct.library.utils.TinkerUtil;
 import slimeknights.tconstruct.tools.modifiers.ModDiamond;
 import slimeknights.tconstruct.tools.modifiers.ModEmerald;
 import tyra314.toolprogression.ToolProgressionMod;
@@ -65,7 +66,7 @@ public class TiCEventHandler
     {
         int harvestLevel = getToolHarvestLevel(event.getItemStack());
 
-        for(IModifier mod : event.getModifiers())
+        for(IModifier mod :  TinkerUtil.getModifiers(event.getItemStack()))
         {
             if (mod instanceof ModDiamond || mod instanceof ModEmerald)
             {
