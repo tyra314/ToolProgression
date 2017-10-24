@@ -90,7 +90,7 @@ public class WailaTooltipProvider implements IWailaDataProvider
             }
             else if (tool != null && r == HarvestHelper.Result.LEVEL)
             {
-                int required_level = accessor.getBlock().getHarvestLevel(accessor.getBlockState());
+                int required_level = HarvestHelper.getRequiredHarvestLevel(accessor.getPlayer(), accessor.getBlockState());
 
                 String harvest_level = String.valueOf(required_level);
 

@@ -24,6 +24,8 @@ public class ConfigHandler
 
     public static boolean tconstruct_overwrite = true;
 
+    public static boolean game_stages_compat = true;
+
     public static ToolOverwriteConfig toolOverwrites = new ToolOverwriteConfig(CommonProxy
             .tool_overwrites_config);
 
@@ -127,5 +129,8 @@ public class ConfigHandler
 
         tconstruct_overwrite = cfg.getBoolean("tconstruct", CATEGORY_COMPAT,
                 tconstruct_overwrite, "Set this to false, to leave Tinkers alone.");
+
+        game_stages_compat = cfg.getBoolean("gamestages", CATEGORY_COMPAT,
+                game_stages_compat, "Set this to false, to leave GameStages alone.");
     }
 }
