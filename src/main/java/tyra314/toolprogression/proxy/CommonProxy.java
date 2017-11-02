@@ -2,6 +2,7 @@ package tyra314.toolprogression.proxy;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemTool;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -109,7 +110,7 @@ public class CommonProxy
 
         for (Item item : item_registry)
         {
-            if (item instanceof ItemTool)
+            if (item instanceof ItemTool || item instanceof ItemHoe)
             {
                 OverwriteHelper.handleItem(item);
             }
