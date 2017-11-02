@@ -1,7 +1,6 @@
 package tyra314.toolprogression.config;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -12,16 +11,31 @@ import tyra314.toolprogression.harvest.BlockOverwrite;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BlockOverwriteConfig
 {
-    private Configuration cfg;
     private final Map<String, BlockOverwrite> overwrites = new HashMap<>();
+    private Configuration cfg;
 
 
     BlockOverwriteConfig(Configuration file)
     {
         cfg = file;
+    }
+
+    private void handleBlockOverwrite(String block, String config)
+    {
+        BlockOverwrite overwrite = BlockOverwrite.readFromConfig(config);
+        if (overwrite == null)
+        {
+            ToolProgressionMod.logger.log(Level.WARN,
+                    String.format("Invalid block overwrite config for block: %s (%s)",
+                            block,
+                            config));
+        }
+        overwrites.put(block, overwrite);
     }
 
     public void load()
@@ -35,13 +49,51 @@ public class BlockOverwriteConfig
 
             overwrites.clear();
 
-            for (Map.Entry<String, Property> tool : cfg.getCategory("block").entrySet())
+            final String regex = "^([^:]+):([^:]+):([\\d\\*]{1,2})$";
+            final Pattern pattern = Pattern.compile(regex);
+
+            ConfigCategory category = cfg.getCategory("block");
+            for (Map.Entry<String, Property> block_entry : category.entrySet())
             {
-                ResourceLocation rl = new ResourceLocation(tool.getKey());
-                BlockOverwrite
-                        overwrite =
-                        BlockOverwrite.readFromConfig(tool.getValue().getString());
-                overwrites.put(tool.getKey(), overwrite);
+                final Matcher matcher = pattern.matcher(block_entry.getKey());
+
+                if (matcher.find())
+                {
+                    if (matcher.group(3).equals("*"))
+                    {
+                        // Wildcard here lets try stuff, cuz we trump
+                        for (int i = 0; i < 16; i++)
+                        {
+                            StringBuilder sb = new StringBuilder();
+
+                            sb.append(matcher.group(1)).append(":");
+                            sb.append(matcher.group(2)).append(":");
+                            sb.append(i);
+
+                            String block = sb.toString();
+
+                            if (category.containsKey(block))
+                            {
+                                handleBlockOverwrite(block, category.get(block).getString());
+                            }
+                            else
+                            {
+                                handleBlockOverwrite(block, block_entry.getValue().getString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        handleBlockOverwrite(block_entry.getKey(),
+                                block_entry.getValue().getString());
+                    }
+                }
+                else
+                {
+                    ToolProgressionMod.logger.log(Level.WARN,
+                            "Invalid block overwrite entry: ",
+                            block_entry.getKey());
+                }
             }
         }
         catch (Exception e)
@@ -55,6 +107,7 @@ public class BlockOverwriteConfig
                 cfg.save();
             }
         }
+
     }
 
     public void save()
