@@ -25,6 +25,9 @@ minecraft {
     version = "${mc_version}-${forge_version}"
     runDir = "run"
 
+    replace '@VERSION@', project.version
+    replace '@FINGERPRINT@', project.findProperty('signSHA1')
+
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -64,9 +67,9 @@ dependencies {
 
     //deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
 
-    compile "net.darkhax.bookshelf:Bookshelf-${mc_version}:${bookshelf_version}"
-    compile "net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}"
-    compile "net.darkhax.orestages:OreStages-${mc_version}:${orestages_version}"
+    deobfCompile "net.darkhax.bookshelf:Bookshelf-${mc_version}:${bookshelf_version}"
+    deobfCompile "net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}"
+    deobfCompile "net.darkhax.orestages:OreStages-${mc_version}:${orestages_version}"
 
     runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 }
@@ -107,3 +110,24 @@ jar {
         attributes 'FMLAT': 'toolprogression_at.cfg'
     }
 }
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+
+    // Skips if the keyStore property is missing.
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+
+    // findProperty allows us to reference the property without it existing.
+    // Using project.propName would cause the script to fail validation if
+    // the property did not exist.
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+// Runs this task automatically when build is ran.
+build.dependsOn signJar

@@ -2,21 +2,19 @@ package tyra314.toolprogression;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tyra314.toolprogression.command.ToolProgressionCommand;
 import tyra314.toolprogression.proxy.CommonProxy;
 
-@Mod(modid = ToolProgressionMod.MODID, version = ToolProgressionMod.VERSION, dependencies = "before:tconstruct;after:gamestages;after:orestages", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = ToolProgressionMod.MODID, certificateFingerprint = ToolProgressionMod.SHA_HASH, version = ToolProgressionMod.VERSION, dependencies = "before:tconstruct;after:gamestages;after:orestages", acceptedMinecraftVersions = "[1.12,1.13)")
 public class ToolProgressionMod
 {
     public static final String MODID = "toolprogression";
     @SuppressWarnings("WeakerAccess")
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "@VERSION@";
+    public static final String SHA_HASH = "@FINGERPRINT@";
 
     @SuppressWarnings({"WeakerAccess", "unused"})
     @SidedProxy(clientSide = "tyra314.toolprogression.proxy.ClientProxy", serverSide = "tyra314.toolprogression.proxy.ServerProxy")
@@ -50,5 +48,10 @@ public class ToolProgressionMod
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new ToolProgressionCommand());
+    }
+
+    @Mod.EventHandler
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
+        logger.warn("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
