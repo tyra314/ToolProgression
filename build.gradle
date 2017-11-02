@@ -36,7 +36,7 @@ minecraft {
 
 repositories {
     maven { // Hwyla
-        url "http://tehnut.info/maven"
+        url 'http://tehnut.info/maven'
     }
 
     maven { // JEI
@@ -50,6 +50,10 @@ repositories {
     maven { // WAILA
         url 'http://mobiusstrip.eu/maven'
     }
+
+    maven { // GameStages
+        url 'https://maven.mcmoddev.com'
+    }
 }
 
 dependencies {
@@ -60,6 +64,9 @@ dependencies {
 
     //deobfCompile "mcp.mobius.waila:Waila:1.7.1_1.11.2"
 
+    compile "net.darkhax.bookshelf:Bookshelf-${mc_version}:${bookshelf_version}"
+    compile "net.darkhax.gamestages:GameStages-${mc_version}:${gamestages_version}"
+    compile "net.darkhax.orestages:OreStages-${mc_version}:${orestages_version}"
 
     runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 }
