@@ -7,10 +7,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -84,7 +81,7 @@ public class ToolProgressionCommand extends CommandBase
 
         for (Item item : item_registry)
         {
-            if (item instanceof ItemTool)
+            if (item instanceof ItemTool || item instanceof ItemHoe)
             {
                 ToolOverwrite.applyToItem(item);
             }

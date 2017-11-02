@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 
@@ -19,7 +20,7 @@ public class HarvestHelper
 
         if (GSHelper.isLoaded())
         {
-            state = GSHelper.getStagedBlockState(player, state);
+            state = GSEventHandler.getStagedBlockState(player, state);
         }
 
         BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
@@ -67,7 +68,7 @@ public class HarvestHelper
     {
         if (GSHelper.isLoaded())
         {
-            state = GSHelper.getStagedBlockState(player, state);
+            state = GSEventHandler.getStagedBlockState(player, state);
         }
 
         return state.getBlock().getHarvestLevel(state);
