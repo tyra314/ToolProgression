@@ -95,6 +95,11 @@ public class MaterialOverwriteConfig
         return null;
     }
 
+    @SuppressWarnings("unused")
+    public MaterialOverwrite get(Item.ToolMaterial mat)
+    {
+        return get(mat.name().toLowerCase());
+    }
 
     @SuppressWarnings("unused")
     public void unset(String key)

@@ -5,6 +5,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -12,13 +13,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import tyra314.toolprogression.compat.gamestages.GSEventHandler;
+import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.HarvestHelper;
-import tyra314.toolprogression.harvest.HarvestLevel;
+import tyra314.toolprogression.harvest.HarvestLevelName;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class WailaTooltipProvider implements IWailaDataProvider
 {
     public static void register(IWailaRegistrar registrar)
@@ -62,18 +66,26 @@ public class WailaTooltipProvider implements IWailaDataProvider
                                      IWailaDataAccessor accessor,
                                      IWailaConfigHandler config)
     {
+        IBlockState state = accessor.getBlockState();
 
-        String tool = accessor.getBlock().getHarvestTool(accessor.getBlockState());
+        if (GSHelper.isLoaded())
+        {
+            state = GSEventHandler.getStagedBlockState(accessor.getPlayer(), state);
+        }
+
+        String required_toolclass = state.getBlock().getHarvestTool(state);
         ItemStack active_tool = accessor.getPlayer().getHeldItemMainhand();
 
-        HarvestHelper.Result r = HarvestHelper.canPlayerHarvestReason(accessor.getPlayer(), accessor
-                .getBlockState(), accessor.getWorld(), accessor.getPosition());
+        HarvestHelper.Result r =
+                HarvestHelper.canPlayerHarvestReason(accessor.getPlayer(), state);
 
         if (accessor.getBlock() != Blocks.BEDROCK && r == HarvestHelper.Result.NONE)
         {
-            if (tool != null && !active_tool.getItem().getToolClasses(active_tool).contains(tool))
+            if (required_toolclass != null &&
+                !active_tool.getItem().getToolClasses(active_tool).contains(required_toolclass) &&
+                !required_toolclass.equals("null"))
             {
-                currenttip.add(0, String.format("Effective Tool : §4%s", tool));
+                currenttip.add(0, String.format("Effective Tool : §4%s", required_toolclass));
             }
 
             if (ConfigHandler.waila_show_harvestable)
@@ -83,20 +95,20 @@ public class WailaTooltipProvider implements IWailaDataProvider
         }
         else
         {
-            if (tool != null && r == HarvestHelper.Result.TOOL_CLASS)
+            if (required_toolclass != null && r == HarvestHelper.Result.TOOL_CLASS)
             {
-                currenttip.add(0, String.format("Required Tool : §4%s", tool));
+                currenttip.add(0, String.format("Required Tool : §4%s", required_toolclass));
 
             }
-            else if (tool != null && r == HarvestHelper.Result.LEVEL)
+            else if (required_toolclass != null && r == HarvestHelper.Result.LEVEL)
             {
-                int required_level = HarvestHelper.getRequiredHarvestLevel(accessor.getPlayer(), accessor.getBlockState());
+                int required_level = state.getBlock().getHarvestLevel(state);
 
                 String harvest_level = String.valueOf(required_level);
 
-                if (HarvestLevel.levels.containsKey(required_level))
+                if (HarvestLevelName.levels.containsKey(required_level))
                 {
-                    harvest_level = HarvestLevel.levels.get(required_level).getFormatted();
+                    harvest_level = HarvestLevelName.levels.get(required_level).getFormatted();
                 }
 
                 currenttip.add(0, String.format("Harvest Level : %s", harvest_level));

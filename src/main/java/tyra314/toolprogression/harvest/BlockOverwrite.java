@@ -6,20 +6,18 @@ import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 
+@SuppressWarnings("WeakerAccess")
 public class BlockOverwrite
 {
-    private String toolclass;
-    private int level;
+    public String toolclass;
+    public int level;
+    public boolean toolRequired;
 
-    public String getConfig()
+    public BlockOverwrite(String toolclass, int level, boolean toolRequired)
     {
-        return toolclass + "=" + String.valueOf(level);
-    }
-
-    public void addOverwrite(String toolClass, int level)
-    {
-        this.toolclass = toolClass;
+        this.toolclass = toolclass;
         this.level = level;
+        this.toolRequired = toolRequired;
     }
 
     public static void applyToAllStates(Block block)
@@ -42,28 +40,45 @@ public class BlockOverwrite
         }
     }
 
-    public void apply(IBlockState state)
-    {
-        state.getBlock().setHarvestLevel(toolclass, level, state);
-
-        ToolProgressionMod.logger.log(Level.INFO, String.format("Applying overwrite to block %s: %s %d", BlockHelper.getKeyString(state), toolclass, level));
-    }
-
-    public BlockOverwrite(String toolclass, int level)
-    {
-        this.toolclass = toolclass;
-        this.level = level;
-    }
-
     public static BlockOverwrite readFromConfig(String config)
     {
         String[] token = config.split("=");
 
         if (token.length == 2)
         {
-            return new BlockOverwrite(token[0], Integer.parseInt(token[1]));
+            if (token[0].startsWith("?"))
+            {
+                return new BlockOverwrite(token[0].substring(1), Integer.parseInt(token[1]), false);
+            }
+            else
+            {
+                return new BlockOverwrite(token[0], Integer.parseInt(token[1]), true);
+            }
         }
 
         return null;
+    }
+
+    public String getConfig()
+    {
+        return (toolRequired ? "" : "?") + toolclass + "=" + String.valueOf(level);
+    }
+
+    public void addOverwrite(String toolClass, int level, boolean toolRequired)
+    {
+        this.toolclass = toolClass;
+        this.level = level;
+        this.toolRequired = toolRequired;
+    }
+
+    public void apply(IBlockState state)
+    {
+        state.getBlock().setHarvestLevel(toolclass, level, state);
+
+        ToolProgressionMod.logger.log(Level.INFO,
+                String.format("Applying overwrite to block %s: %s %d",
+                        BlockHelper.getKeyString(state),
+                        toolclass,
+                        level));
     }
 }

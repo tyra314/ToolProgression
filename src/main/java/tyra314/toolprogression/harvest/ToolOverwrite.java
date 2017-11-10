@@ -1,9 +1,7 @@
 package tyra314.toolprogression.harvest;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
@@ -17,11 +15,6 @@ public class ToolOverwrite
 
     static String getConfig(Item item)
     {
-        if (!(item instanceof ItemTool || item instanceof ItemHoe))
-        {
-            return null;
-        }
-
         StringBuilder config = new StringBuilder();
 
         for (String toolclass : item.getToolClasses(new ItemStack(item)))
@@ -49,14 +42,7 @@ public class ToolOverwrite
 
         if (overwrite != null)
         {
-            if (item instanceof ItemTool)
-            {
-                overwrite.apply((ItemTool) item);
-            }
-            else if (item instanceof ItemHoe)
-            {
-                overwrite.apply((ItemHoe) item);
-            }
+            overwrite.apply(item);
         }
     }
 
@@ -106,23 +92,14 @@ public class ToolOverwrite
         harvest_levels.put(toolclass, level);
     }
 
-    public void apply(ItemTool item)
+    public void apply(Item item)
     {
-        for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
+        // if there is an overwrite, we need to disable all old tool classes
+        for (String entry : item.getToolClasses(new ItemStack(item)))
         {
-            item.setHarvestLevel(entry.getKey(), entry.getValue());
-
-            ToolProgressionMod.logger.log(Level.INFO,
-                    String.format("Applying overwrite to item %s: %s %d",
-                            item.getRegistryName(),
-                            entry.getKey(),
-                            entry.getValue()));
-
+            item.setHarvestLevel(entry, -1);
         }
-    }
 
-    public void apply(ItemHoe item)
-    {
         for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
         {
             item.setHarvestLevel(entry.getKey(), entry.getValue());
