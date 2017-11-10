@@ -18,7 +18,7 @@ public class GSEventHandler
         Tuple<String, IBlockState> info = OreTiersAPI.getStageInfo(state);
         PlayerDataHandler.IStageData stage_data = PlayerDataHandler.getStageData(player);
 
-        if (!stage_data.hasUnlockedStage(info.getFirst()))
+        if (info != null && !stage_data.hasUnlockedStage(info.getFirst()))
         {
             return info.getSecond();
         }
