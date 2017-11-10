@@ -1,5 +1,6 @@
 package tyra314.toolprogression.compat.gamestages;
 
+import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 
 @SuppressWarnings({"unchecked", "CanBeFinal"})
@@ -15,8 +16,9 @@ public class GSHelper
             ore_stages_api = Class.forName("net.darkhax.orestages.api.OreTiersAPI");
             game_stages = Class.forName("net.darkhax.gamestages.capabilities.PlayerDataHandler");
         }
-        catch (ClassNotFoundException e)
+        catch (ClassNotFoundException ignored)
         {
+            ToolProgressionMod.logger.info("Game stages and/or Ore Stages isn't loaded.");
         }
     }
 
