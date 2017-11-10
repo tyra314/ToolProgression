@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class BlockOverwriteConfig
 {
     private final Map<String, BlockOverwrite> overwrites = new HashMap<>();
-    private Configuration cfg;
+    private final Configuration cfg;
 
 
     BlockOverwriteConfig(Configuration file)
@@ -49,7 +49,9 @@ public class BlockOverwriteConfig
 
             overwrites.clear();
 
+            @SuppressWarnings("Annotator")
             final String regex = "^([^:]+):([^:]+):([\\d\\*]{1,2})$";
+
             final Pattern pattern = Pattern.compile(regex);
 
             ConfigCategory category = cfg.getCategory("block");
@@ -64,13 +66,10 @@ public class BlockOverwriteConfig
                         // Wildcard here lets try stuff, cuz we trump
                         for (int i = 0; i < 16; i++)
                         {
-                            StringBuilder sb = new StringBuilder();
 
-                            sb.append(matcher.group(1)).append(":");
-                            sb.append(matcher.group(2)).append(":");
-                            sb.append(i);
-
-                            String block = sb.toString();
+                            String block = matcher.group(1) + ":" +
+                                           matcher.group(2) + ":" +
+                                           i;
 
                             if (category.containsKey(block))
                             {

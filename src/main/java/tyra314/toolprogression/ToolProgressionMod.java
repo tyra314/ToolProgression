@@ -12,8 +12,11 @@ import tyra314.toolprogression.proxy.CommonProxy;
 public class ToolProgressionMod
 {
     public static final String MODID = "toolprogression";
+
     @SuppressWarnings("WeakerAccess")
     public static final String VERSION = "@VERSION@";
+
+    @SuppressWarnings("WeakerAccess")
     public static final String SHA_HASH = "@FINGERPRINT@";
 
     @SuppressWarnings({"WeakerAccess", "unused"})

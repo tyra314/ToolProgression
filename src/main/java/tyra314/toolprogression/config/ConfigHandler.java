@@ -3,11 +3,8 @@ package tyra314.toolprogression.config;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
-import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
-import tyra314.toolprogression.harvest.HarvestLevel;
+import tyra314.toolprogression.harvest.HarvestLevelName;
 import tyra314.toolprogression.proxy.CommonProxy;
-
-import java.util.Map;
 
 public class ConfigHandler
 {
@@ -26,13 +23,13 @@ public class ConfigHandler
 
     public static boolean game_stages_compat = true;
 
-    public static ToolOverwriteConfig toolOverwrites = new ToolOverwriteConfig(CommonProxy
+    public static final ToolOverwriteConfig toolOverwrites = new ToolOverwriteConfig(CommonProxy
             .tool_overwrites_config);
 
-    public static BlockOverwriteConfig blockOverwrites = new BlockOverwriteConfig(CommonProxy
+    public static final BlockOverwriteConfig blockOverwrites = new BlockOverwriteConfig(CommonProxy
             .block_overwrites_config);
 
-    public static MaterialOverwriteConfig matOverwrites = new MaterialOverwriteConfig(CommonProxy
+    public static final MaterialOverwriteConfig matOverwrites = new MaterialOverwriteConfig(CommonProxy
             .mat_overwrites_config);
 
     public static void readBaseConfig()
@@ -87,10 +84,10 @@ public class ConfigHandler
 
         for (String name : names)
         {
-            HarvestLevel level = HarvestLevel.readFromConfig(name);
+            HarvestLevelName level = HarvestLevelName.readFromConfig(name);
             if (level != null)
             {
-                HarvestLevel.levels.put(level.getLevel(), level);
+                HarvestLevelName.levels.put(level.getLevel(), level);
 
                 ToolProgressionMod.logger.log(Level.INFO, String.format("Mining level: %d - %s",
                         level.getLevel(), level.getName()));

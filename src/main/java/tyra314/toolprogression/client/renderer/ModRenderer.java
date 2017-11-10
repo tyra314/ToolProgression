@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.item.ModItems;
 
+@SuppressWarnings("WeakerAccess")
 @Mod.EventBusSubscriber
 public class ModRenderer
 {

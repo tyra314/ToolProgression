@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tyra314.toolprogression.config.ConfigHandler;
-import tyra314.toolprogression.harvest.HarvestLevel;
+import tyra314.toolprogression.harvest.HarvestLevelName;
 
 @SideOnly(Side.CLIENT)
 public class TooltipEventHandler
@@ -36,9 +36,9 @@ public class TooltipEventHandler
             return;
         }
 
-        if (HarvestLevel.levels.containsKey(level))
+        if (HarvestLevelName.levels.containsKey(level))
         {
-            event.getToolTip().add(String.format("§fMining Level:§r %s", HarvestLevel.levels.get(level).getFormatted()));
+            event.getToolTip().add(String.format("§fMining Level:§r %s", HarvestLevelName.levels.get(level).getFormatted()));
         } else
         {
             event.getToolTip().add(String.format("§fMining Level:§r %d", level));

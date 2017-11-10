@@ -8,8 +8,10 @@ import slimeknights.tconstruct.library.utils.TagUtil;
 import slimeknights.tconstruct.tools.modifiers.ToolModifier;
 import tyra314.toolprogression.item.ModItems;
 
+@SuppressWarnings("WeakerAccess")
 public class MagicMushroomMod extends ToolModifier
 {
+    @SuppressWarnings("WeakerAccess")
     public static Modifier magic_mushroom;
 
     public static void init()
@@ -18,6 +20,7 @@ public class MagicMushroomMod extends ToolModifier
         magic_mushroom.addItem(ModItems.magic_mushroom);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public MagicMushroomMod()
     {
         super("magicmushroom", 0x55ACEE);

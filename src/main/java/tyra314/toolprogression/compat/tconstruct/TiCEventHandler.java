@@ -15,6 +15,7 @@ import slimeknights.tconstruct.tools.modifiers.ModEmerald;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.proxy.CommonProxy;
 
+@SuppressWarnings("WeakerAccess")
 public class TiCEventHandler
 {
     @SubscribeEvent
@@ -66,7 +67,7 @@ public class TiCEventHandler
     {
         int harvestLevel = getToolHarvestLevel(event.getItemStack());
 
-        for(IModifier mod :  TinkerUtil.getModifiers(event.getItemStack()))
+        for (IModifier mod : TinkerUtil.getModifiers(event.getItemStack()))
         {
             if (mod instanceof ModDiamond || mod instanceof ModEmerald)
             {

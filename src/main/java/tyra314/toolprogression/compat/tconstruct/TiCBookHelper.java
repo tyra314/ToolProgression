@@ -7,6 +7,7 @@ import slimeknights.mantle.client.book.repository.FileRepository;
 import slimeknights.tconstruct.library.book.TinkerBook;
 import tyra314.toolprogression.ToolProgressionMod;
 
+@SuppressWarnings("WeakerAccess")
 public class TiCBookHelper
 {
     @SideOnly(Side.CLIENT)

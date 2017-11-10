@@ -2,7 +2,7 @@ package tyra314.toolprogression.compat.gamestages;
 
 import tyra314.toolprogression.config.ConfigHandler;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "CanBeFinal"})
 public class GSHelper
 {
     private static Class<?> ore_stages_api = null;

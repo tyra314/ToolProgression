@@ -3,13 +3,13 @@ package tyra314.toolprogression.compat.tconstruct;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
-import tyra314.toolprogression.harvest.HarvestLevel;
+import tyra314.toolprogression.harvest.HarvestLevelName;
 
 import java.util.Map;
 
 public class TiCMiningLevels
 {
-    public static Map<Integer, String> getMiningLevels()
+    private static Map<Integer, String> getMiningLevels()
     {
         Map<Integer, String> miningLevels = null;
 
@@ -18,6 +18,7 @@ public class TiCMiningLevels
             Class clazz = Class.forName("slimeknights.tconstruct.library.utils.HarvestLevels");
             if (clazz != null)
             {
+                //noinspection unchecked
                 miningLevels = (Map<Integer, String>) clazz.getField("harvestLevelNames")
                         .get(null);
             }
@@ -42,7 +43,7 @@ public class TiCMiningLevels
         if (tcmininglevels == null)
         {
             ToolProgressionMod.logger.log(Level.WARN,
-                    "Couldn't apply compat for TiC mining levels :(");
+                    "Couldn't applyTo compat for TiC mining levels :(");
 
             return;
         }
@@ -50,9 +51,9 @@ public class TiCMiningLevels
         for (Map.Entry<Integer, String> it : tcmininglevels.entrySet())
         {
             int key = it.getKey();
-            if (!HarvestLevel.levels.containsKey(key))
+            if (!HarvestLevelName.levels.containsKey(key))
             {
-                HarvestLevel.levels.put(key, new HarvestLevel(key, it.getValue()));
+                HarvestLevelName.levels.put(key, new HarvestLevelName(key, it.getValue()));
                 ToolProgressionMod.logger.log(Level.INFO,
                         "Merged harvest level from Tinkers' Construct: " +
                         String.valueOf(key) +
@@ -63,7 +64,7 @@ public class TiCMiningLevels
 
         tcmininglevels.clear();
 
-        for (HarvestLevel level : HarvestLevel.levels.values())
+        for (HarvestLevelName level : HarvestLevelName.levels.values())
         {
             tcmininglevels.put(level.getLevel(), level.getFormatted());
         }

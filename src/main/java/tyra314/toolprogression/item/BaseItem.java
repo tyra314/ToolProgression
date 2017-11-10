@@ -10,7 +10,7 @@ import tyra314.toolprogression.client.renderer.IModelRegister;
 
 public class BaseItem extends Item implements IModelRegister
 {
-
+    @SuppressWarnings("WeakerAccess")
     public BaseItem(String name)
     {
         setRegistryName(name);
@@ -21,6 +21,7 @@ public class BaseItem extends Item implements IModelRegister
     @SideOnly(Side.CLIENT)
     public void registerModel()
     {
+        //noinspection ConstantConditions
         ModelLoader.setCustomModelResourceLocation(this,
                 0,
                 new ModelResourceLocation(this.getRegistryName(), "inventory"));

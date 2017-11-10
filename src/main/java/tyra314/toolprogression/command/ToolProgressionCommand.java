@@ -31,10 +31,9 @@ import java.util.List;
 
 public class ToolProgressionCommand extends CommandBase
 {
-    private final List<String> aliases = Lists.newArrayList(ToolProgressionMod.MODID);
     private static final String[] COMMAND_COMPLETIONS = {"reload", "set", "unset"};
     private static final String[] SET_COMPLETIONS = {"pickaxe", "axe", "shovel"};
-
+    private final List<String> aliases = Lists.newArrayList(ToolProgressionMod.MODID);
 
     @Override
     public @Nonnull
@@ -66,6 +65,7 @@ public class ToolProgressionCommand extends CommandBase
                                                    msg));
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean handleReload(@Nonnull ICommandSender sender)
     {
         ConfigHandler.readBaseConfig();
@@ -141,9 +141,8 @@ public class ToolProgressionCommand extends CommandBase
             Block block = iblock.getBlock();
 
             // I don't know, why we shouldn't use that here. Enlighten me, if you do. Thanks.
-            @SuppressWarnings("deprecation") IBlockState
-                    state =
-                    block.getStateFromMeta(item.getDamage(stack));
+            @SuppressWarnings("deprecation")
+            IBlockState state = block.getStateFromMeta(item.getDamage(stack));
 
             ConfigHandler.blockOverwrites.unset(BlockHelper.getKeyString(state));
             ConfigHandler.blockOverwrites.save();
@@ -166,15 +165,12 @@ public class ToolProgressionCommand extends CommandBase
     {
         EntityPlayer player = server.getPlayerList().getPlayers().get(0);
 
-
         ItemStack stack = player.getHeldItemMainhand();
-
 
         if (stack.isEmpty())
         {
             sender.sendMessage(new TextComponentString(TextFormatting.RED +
                                                        "Can't set overwrite for an empty item."));
-
             return true;
         }
 
@@ -190,7 +186,7 @@ public class ToolProgressionCommand extends CommandBase
             }
 
             overwrite.addOverwrite(itemclass, level);
-            overwrite.apply((ItemTool) item);
+            overwrite.apply(item);
 
             ConfigHandler.toolOverwrites.set(item, overwrite);
             ConfigHandler.toolOverwrites.save();
@@ -209,9 +205,8 @@ public class ToolProgressionCommand extends CommandBase
             Block block = iblock.getBlock();
 
             // I don't know, why we shouldn't use that here. Enlighten me, if you do. Thanks.
-            @SuppressWarnings("deprecation") IBlockState
-                    state =
-                    block.getStateFromMeta(item.getDamage(stack));
+            @SuppressWarnings("deprecation")
+            IBlockState state = block.getStateFromMeta(item.getDamage(stack));
 
             String key = BlockHelper.getKeyString(state);
 
@@ -219,11 +214,11 @@ public class ToolProgressionCommand extends CommandBase
 
             if (overwrite == null)
             {
-                overwrite = new BlockOverwrite(itemclass, level);
+                overwrite = new BlockOverwrite(itemclass, level, true);
             }
             else
             {
-                overwrite.addOverwrite(itemclass, level);
+                overwrite.addOverwrite(itemclass, level, true);
             }
 
             overwrite.apply(state);
@@ -275,9 +270,10 @@ public class ToolProgressionCommand extends CommandBase
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-        if(!server.isSinglePlayer())
+        if (!server.isSinglePlayer())
         {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "I'm sorry, but this command can only be used in single player mode."));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED +
+                                                       "I'm sorry, but this command can only be used in single player mode."));
         }
 
         return server.isSinglePlayer();
@@ -314,9 +310,7 @@ public class ToolProgressionCommand extends CommandBase
 
         if (args.length == 2 && comp.contains("set"))
         {
-            List<String> itemClass = completeTo(args[1], SET_COMPLETIONS);
-
-            return itemClass;
+            return completeTo(args[1], SET_COMPLETIONS);
         }
 
         return Collections.emptyList();

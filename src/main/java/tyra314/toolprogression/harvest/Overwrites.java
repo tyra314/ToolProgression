@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemTool;
 import tyra314.toolprogression.proxy.CommonProxy;
 
-public class OverwriteHelper
+public class Overwrites
 {
     public static void handleBlock(Block block)
     {
@@ -27,24 +27,22 @@ public class OverwriteHelper
     {
         String config = ToolOverwrite.getConfig(item);
 
-        if (config == null)
+        if (!config.isEmpty())
         {
-            return;
+            //noinspection ConstantConditions
+            CommonProxy.tools_config.getString(item.getRegistryName().toString(),
+                    "tool",
+                    config,
+                    item.getRegistryName().toString());
         }
-
-        //noinspection ConstantConditions
-        CommonProxy.tools_config.getString(item.getRegistryName().toString(),
-                "tool",
-                config,
-                item.getRegistryName().toString());
 
         ToolOverwrite.applyToItem(item);
     }
 
     public static void handleMaterial(ItemTool.ToolMaterial mat)
     {
-        String config = MaterialHelper.getConfig(mat);
-        String name = MaterialHelper.getName(mat);
+        String config = String.valueOf(mat.getHarvestLevel());
+        String name = mat.name().toLowerCase();
 
         CommonProxy.mats_config.getString(name, "material", config, name);
 

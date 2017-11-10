@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ToolOverwriteConfig
 {
-    private Configuration cfg;
+    private final Configuration cfg;
     private final Map<ResourceLocation, ToolOverwrite> overwrites = new HashMap<>();
 
 
@@ -37,6 +37,7 @@ public class ToolOverwriteConfig
             for (Map.Entry<String, Property> tool : cfg.getCategory("tool").entrySet())
             {
                 ResourceLocation rl = new ResourceLocation(tool.getKey());
+
                 ToolOverwrite overwrite = ToolOverwrite.readFromConfig(tool.getValue().getString());
                 overwrites.put(rl, overwrite);
             }

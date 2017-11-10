@@ -1,6 +1,6 @@
 package tyra314.toolprogression.config;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class MaterialOverwriteConfig
 {
-    private Configuration cfg;
+    private final Configuration cfg;
     private final Map<String, MaterialOverwrite> overwrites = new HashMap<>();
 
 
@@ -35,7 +35,6 @@ public class MaterialOverwriteConfig
 
             for (Map.Entry<String, Property> mat : cfg.getCategory("material").entrySet())
             {
-                ResourceLocation rl = new ResourceLocation(mat.getKey());
                 MaterialOverwrite overwrite = MaterialOverwrite.readFromConfig(mat.getValue()
                         .getString());
                 overwrites.put(mat.getKey(), overwrite);
@@ -55,6 +54,7 @@ public class MaterialOverwriteConfig
         }
     }
 
+    @SuppressWarnings("unused")
     public void save()
     {
         try
@@ -96,12 +96,13 @@ public class MaterialOverwriteConfig
     }
 
 
+    @SuppressWarnings("unused")
     public void unset(String key)
     {
         overwrites.remove(key);
     }
 
-
+    @SuppressWarnings("unused")
     public void set(String key, MaterialOverwrite overwrite)
     {
         overwrites.put(key, overwrite);

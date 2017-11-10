@@ -5,16 +5,13 @@ import tyra314.toolprogression.config.ConfigHandler;
 
 public class MaterialOverwrite
 {
-    int harvestLevel;
+    @SuppressWarnings("WeakerAccess")
+    final int harvestLevel;
 
+    @SuppressWarnings("WeakerAccess")
     public MaterialOverwrite(int harvestLevel)
     {
         this.harvestLevel = harvestLevel;
-    }
-
-    public String getConfig()
-    {
-        return String.valueOf(harvestLevel);
     }
 
     public static MaterialOverwrite readFromConfig(String config)
@@ -24,17 +21,28 @@ public class MaterialOverwrite
 
     public static void applyToMaterial(Item.ToolMaterial mat)
     {
-        MaterialOverwrite overwrite = ConfigHandler.matOverwrites.get(MaterialHelper.getName(mat));
+        MaterialOverwrite overwrite = ConfigHandler.matOverwrites.get(
+                mat.name().toLowerCase()
+        );
 
         if (overwrite != null)
         {
-            overwrite.apply(mat);
+            overwrite.applyTo(mat);
         }
     }
 
-    public void apply(Item.ToolMaterial mat)
+    public String getConfig()
     {
-        MaterialHelper.setHarvestLevel(mat, harvestLevel);
+        return String.valueOf(harvestLevel);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void applyTo(Item.ToolMaterial mat)
+    {
+        // harvestLevel is a private field of Item.ToolMaterial
+        // I have an AccessTransformer for that field, but
+        // still this is the only place, where it is accessed within this mod.
+        mat.harvestLevel = harvestLevel;
     }
 
     public int getHarvestLevel()

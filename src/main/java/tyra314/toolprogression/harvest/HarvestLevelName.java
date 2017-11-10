@@ -3,37 +3,38 @@ package tyra314.toolprogression.harvest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HarvestLevel
+public class HarvestLevelName
 {
-    public static final Map<Integer, HarvestLevel> levels = new HashMap<>();
+    public static final Map<Integer, HarvestLevelName> levels = new HashMap<>();
 
     private final String name;
     private final int level;
     private String format = null;
 
-    public static HarvestLevel readFromConfig(String config)
+    public static HarvestLevelName readFromConfig(String config)
     {
         String[] tokens = config.split(":");
         if (tokens.length == 2)
         {
             int level = Integer.parseInt(tokens[0]);
-            return new HarvestLevel(level, tokens[1]);
+            return new HarvestLevelName(level, tokens[1]);
         } else if (tokens.length == 3)
         {
             int level = Integer.parseInt(tokens[0]);
-            return new HarvestLevel(level, tokens[1], tokens[2]);
+            return new HarvestLevelName(level, tokens[1], tokens[2]);
         }
 
         return null;
     }
 
-    public HarvestLevel(int level, String name)
+    public HarvestLevelName(int level, String name)
     {
         this.level = level;
         this.name = name;
     }
 
-    public HarvestLevel(int level, String name, String format)
+    @SuppressWarnings("WeakerAccess")
+    public HarvestLevelName(int level, String name, String format)
     {
         this.level = level;
         this.name = name;
@@ -52,7 +53,7 @@ public class HarvestLevel
     }
 
     @SuppressWarnings("unused")
-    public String getFormat()
+    public String getFormatString()
     {
         return format;
     }

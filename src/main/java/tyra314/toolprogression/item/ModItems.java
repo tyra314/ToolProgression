@@ -13,6 +13,8 @@ public class ModItems
 {
     public static final BaseItem magic_mushroom = null;
 
+    @SuppressWarnings("CanBeFinal")
+    // can't be final because of the ObjectHolder magic
     public static Item[] ITEMS = {
             new MagicMushroom("magic_mushroom"),
     };
