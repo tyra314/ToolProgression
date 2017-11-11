@@ -27,6 +27,7 @@ minecraft {
 
     replace '@VERSION@', project.version
     replace '@FINGERPRINT@', project.findProperty('signSHA1')
+    replaceIn "ToolProgressionMod.java"
 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -35,6 +36,7 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "${mcp_mappings}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    useDepAts = true
 }
 
 repositories {
@@ -112,7 +114,6 @@ jar {
 }
 
 task signJar(type: SignJar, dependsOn: reobfJar) {
-
     // Skips if the keyStore property is missing.
     onlyIf {
         project.hasProperty('keyStore')
