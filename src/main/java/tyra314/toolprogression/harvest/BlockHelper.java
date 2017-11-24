@@ -10,17 +10,18 @@ public class BlockHelper
 {
     static String getConfigString(IBlockState state)
     {
-        if (state.getMaterial().isToolNotRequired())
+        Block block = state.getBlock();
+
+        String toolClass = block.getHarvestTool(block.getDefaultState());
+
+        if (toolClass == null )
         {
             return "null=-1";
         }
 
-        Block block = state.getBlock();
-
-        String toolClass = block.getHarvestTool(block.getDefaultState());
         int level = block.getHarvestLevel(block.getDefaultState());
 
-        return String.format("%s=%d", toolClass, level);
+        return (state.getMaterial().isToolNotRequired() ? "?" : "") + String.format("%s=%d", toolClass, level);
     }
 
     public static String getKeyString(@Nonnull IBlockState state)
