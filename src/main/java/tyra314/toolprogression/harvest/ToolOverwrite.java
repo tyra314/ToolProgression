@@ -7,7 +7,9 @@ import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ToolOverwrite
 {
@@ -95,7 +97,8 @@ public class ToolOverwrite
     public void apply(Item item)
     {
         // if there is an overwrite, we need to disable all old tool classes
-        for (String entry : item.getToolClasses(new ItemStack(item)))
+        Set<String> toolClasses = new HashSet(item.getToolClasses(new ItemStack(item)));
+        for (String entry : toolClasses)
         {
             item.setHarvestLevel(entry, -1);
         }
