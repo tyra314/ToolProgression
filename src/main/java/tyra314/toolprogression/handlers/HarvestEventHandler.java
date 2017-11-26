@@ -7,6 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -19,7 +22,7 @@ import tyra314.toolprogression.harvest.HarvestHelper;
 public class HarvestEventHandler
 {
     /*
-     * This is copied from vanilla / forge
+     * This is copied from vanilla / forge but without calling ForgeEvent
      */
     private float getBreakSpeedDefault(EntityPlayer player, IBlockState state)
     {
@@ -32,13 +35,14 @@ public class HarvestEventHandler
 
             if (i > 0 && !itemstack.isEmpty())
             {
-                f += (float)(i * i + 1);
+                f += (float) (i * i + 1);
             }
         }
 
         if (player.isPotionActive(MobEffects.HASTE))
         {
-            f *= 1.0F + (float)(player.getActivePotionEffect(MobEffects.HASTE).getAmplifier() + 1) * 0.2F;
+            f *= 1.0F +
+                 (float) (player.getActivePotionEffect(MobEffects.HASTE).getAmplifier() + 1) * 0.2F;
         }
 
         if (player.isPotionActive(MobEffects.MINING_FATIGUE))
@@ -64,7 +68,8 @@ public class HarvestEventHandler
             f *= f1;
         }
 
-        if (player.isInsideOfMaterial(Material.WATER) && !EnchantmentHelper.getAquaAffinityModifier(player))
+        if (player.isInsideOfMaterial(Material.WATER) &&
+            !EnchantmentHelper.getAquaAffinityModifier(player))
         {
             f /= 5.0F;
         }
@@ -77,10 +82,49 @@ public class HarvestEventHandler
         return f;
     }
 
+    private boolean canHarvestBlockDefault(IBlockState state, EntityPlayer player)
+    {
+        if (state.getMaterial().isToolNotRequired())
+        {
+            return true;
+        }
+
+        ItemStack stack = player.getHeldItemMainhand();
+        String tool = state.getBlock().getHarvestTool(state);
+        if (stack.isEmpty() || tool == null)
+        {
+            return player.canHarvestBlock(state);
+        }
+
+        int toolLevel = stack.getItem().getHarvestLevel(stack, tool, player, state);
+        if (toolLevel < 0)
+        {
+            return player.canHarvestBlock(state);
+        }
+
+        return toolLevel >= state.getBlock().getHarvestLevel(state);
+    }
+
+    private void dropBlockDefault(IBlockState state, World world, BlockPos pos, int fortune)
+    {
+        NonNullList<ItemStack> drops = NonNullList.create();
+
+        state.getBlock().getDrops(drops, world, pos, state, fortune);
+
+        // do not drop items while restoring blockstates, prevents item dupe
+        if (!world.isRemote && !world.restoringBlockSnapshots)
+        {
+            for (ItemStack drop : drops)
+            {
+                state.getBlock().spawnAsEntity(world, pos, drop);
+            }
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onBreakSpeed(PlayerEvent.BreakSpeed event)
     {
-        if(!HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
+        if (!HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
                 event.getState()))
         {
             event.setCanceled(true);
@@ -93,9 +137,14 @@ public class HarvestEventHandler
                 state = GSEventHandler.getStagedBlockState(event.getEntityPlayer(), state);
             }
 
-            event.setCanceled(false);
             float f = getBreakSpeedDefault(event.getEntityPlayer(), state);
-            event.setNewSpeed(Math.max(f, 4.0F));
+
+            if (!canHarvestBlockDefault(event.getState(), event.getEntityPlayer()))
+            {
+                f *= 100F / 30F;
+            }
+
+            event.setNewSpeed(f);
         }
     }
 
@@ -121,7 +170,7 @@ public class HarvestEventHandler
                 fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, tool);
             }
 
-            state.getBlock().dropBlockAsItem(event.getWorld(), event.getPos(), state, fortune);
+            dropBlockDefault(state, event.getWorld(), event.getPos(), fortune);
 
             event.setExpToDrop(state.getBlock()
                     .getExpDrop(state, event.getWorld(), event.getPos(), fortune));
