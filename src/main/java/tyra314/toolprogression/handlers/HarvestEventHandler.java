@@ -170,7 +170,10 @@ public class HarvestEventHandler
                 fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, tool);
             }
 
-            dropBlockDefault(state, event.getWorld(), event.getPos(), fortune);
+            if (!event.getPlayer().isCreative() && !event.getPlayer().isSpectator())
+            {
+                dropBlockDefault(state, event.getWorld(), event.getPos(), fortune);
+            }
 
             event.setExpToDrop(state.getBlock()
                     .getExpDrop(state, event.getWorld(), event.getPos(), fortune));
