@@ -6,9 +6,22 @@ import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @SuppressWarnings("WeakerAccess")
 public class BlockOverwrite
 {
+    private static final String REGEX =
+            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)$";
+
+    private static final Pattern pattern;
+
+    static
+    {
+        pattern = Pattern.compile(REGEX);
+    }
+
     public String toolclass;
     public int level;
     public boolean toolRequired;
@@ -42,21 +55,19 @@ public class BlockOverwrite
 
     public static BlockOverwrite readFromConfig(String config)
     {
-        String[] token = config.split("=");
+        Matcher matcher = pattern.matcher(config);
 
-        if (token.length == 2)
+        if (!matcher.find())
         {
-            if (token[0].startsWith("?"))
-            {
-                return new BlockOverwrite(token[0].substring(1), Integer.parseInt(token[1]), false);
-            }
-            else
-            {
-                return new BlockOverwrite(token[0], Integer.parseInt(token[1]), true);
-            }
+            return null;
         }
 
-        return null;
+        boolean toolRequired = matcher.group("effective") == null;
+
+        String toolClass = matcher.group("toolclass");
+        int level = Integer.parseInt(matcher.group("level"));
+
+        return new BlockOverwrite(toolClass, level, toolRequired);
     }
 
     public String getConfig()
