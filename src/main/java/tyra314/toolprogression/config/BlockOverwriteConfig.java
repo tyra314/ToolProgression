@@ -27,7 +27,7 @@ public class BlockOverwriteConfig
 
     private void handleBlockOverwrite(String block, String config)
     {
-        BlockOverwrite overwrite = BlockOverwrite.readFromConfig(config);
+        BlockOverwrite overwrite = BlockOverwrite.createFromConfig(config);
         if (overwrite == null)
         {
             ToolProgressionMod.logger.log(Level.WARN,
@@ -50,7 +50,7 @@ public class BlockOverwriteConfig
             overwrites.clear();
 
             @SuppressWarnings("Annotator")
-            final String regex = "^([^:]+):([^:]+):([\\d\\*]{1,2})$";
+            final String regex = "^(?<modid>[^:]+):(?<block>[^:]+):(?<meta>[\\d\\*]{1,2})$";
 
             final Pattern pattern = Pattern.compile(regex);
 
@@ -61,14 +61,14 @@ public class BlockOverwriteConfig
 
                 if (matcher.find())
                 {
-                    if (matcher.group(3).equals("*"))
+                    if (matcher.group("meta").equals("*"))
                     {
                         // Wildcard here lets try stuff, cuz we trump
                         for (int i = 0; i < 16; i++)
                         {
 
-                            String block = matcher.group(1) + ":" +
-                                           matcher.group(2) + ":" +
+                            String block = matcher.group("modid") + ":" +
+                                           matcher.group("block") + ":" +
                                            i;
 
                             if (category.containsKey(block))

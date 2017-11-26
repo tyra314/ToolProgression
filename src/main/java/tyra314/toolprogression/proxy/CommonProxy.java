@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
@@ -100,16 +99,12 @@ public class CommonProxy
 
         ToolProgressionMod.logger.info("Start doing stupid things");
 
-        final IForgeRegistry<Block> block_registry = GameRegistry.findRegistry(Block.class);
-
-        for (Block block : block_registry)
+        for (Block block : GameRegistry.findRegistry(Block.class))
         {
             Overwrites.handleBlock(block);
         }
 
-        final IForgeRegistry<Item> item_registry = GameRegistry.findRegistry(Item.class);
-
-        for (Item item : item_registry)
+        for (Item item : GameRegistry.findRegistry(Item.class))
         {
             Overwrites.handleItem(item);
         }
@@ -119,22 +114,11 @@ public class CommonProxy
             Overwrites.handleMaterial(mat);
         }
 
+        blocks_config.save();
+        tools_config.save();
+        mats_config.save();
+
         ToolProgressionMod.logger.info("Finished doing stupid things");
-
-        if (blocks_config.hasChanged())
-        {
-            blocks_config.save();
-        }
-
-        if (tools_config.hasChanged())
-        {
-            tools_config.save();
-        }
-
-        if (mats_config.hasChanged())
-        {
-            mats_config.save();
-        }
     }
 }
 

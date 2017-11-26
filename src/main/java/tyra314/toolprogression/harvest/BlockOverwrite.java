@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class BlockOverwrite
 {
     private static final String REGEX =
-            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)$";
+            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
 
     private static final Pattern pattern;
 
@@ -25,12 +25,21 @@ public class BlockOverwrite
     public String toolclass;
     public int level;
     public boolean toolRequired;
+    public float hardness;
 
     public BlockOverwrite(String toolclass, int level, boolean toolRequired)
     {
         this.toolclass = toolclass;
         this.level = level;
         this.toolRequired = toolRequired;
+        this.hardness = -1F;
+    }
+
+    public BlockOverwrite(String toolclass, int level, boolean toolRequired, float hardness)
+    {
+        this(toolclass, level, toolRequired);
+
+        this.hardness = hardness;
     }
 
     public static void applyToAllStates(Block block)
@@ -53,7 +62,7 @@ public class BlockOverwrite
         }
     }
 
-    public static BlockOverwrite readFromConfig(String config)
+    public static BlockOverwrite createFromConfig(String config)
     {
         Matcher matcher = pattern.matcher(config);
 
@@ -67,7 +76,16 @@ public class BlockOverwrite
         String toolClass = matcher.group("toolclass");
         int level = Integer.parseInt(matcher.group("level"));
 
-        return new BlockOverwrite(toolClass, level, toolRequired);
+        String hardness = matcher.group("hardness");
+
+        if (hardness == null)
+        {
+            return new BlockOverwrite(toolClass, level, toolRequired);
+        }
+        else
+        {
+            return new BlockOverwrite(toolClass, level, toolRequired, Float.parseFloat(hardness));
+        }
     }
 
     public String getConfig()
@@ -84,6 +102,11 @@ public class BlockOverwrite
 
     public void apply(IBlockState state)
     {
+        if(hardness >= 0F)
+        {
+            state.getBlock().setHardness(hardness);
+        }
+
         state.getBlock().setHarvestLevel(toolclass, level, state);
 
         ToolProgressionMod.logger.log(Level.INFO,
