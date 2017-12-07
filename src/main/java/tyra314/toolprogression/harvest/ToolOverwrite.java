@@ -100,12 +100,12 @@ public class ToolOverwrite
         Set<String> toolClasses = new HashSet(item.getToolClasses(new ItemStack(item)));
         for (String entry : toolClasses)
         {
-            item.setHarvestLevel(entry, -1);
+            ToolHelper.setHarvestLevel(item, entry, -1);
         }
 
         for (Map.Entry<String, Integer> entry : harvest_levels.entrySet())
         {
-            item.setHarvestLevel(entry.getKey(), entry.getValue());
+            ToolHelper.setHarvestLevel(item, entry.getKey(), entry.getValue());
 
             ToolProgressionMod.logger.log(Level.INFO,
                     String.format("Applying overwrite to item %s: %s %d",
