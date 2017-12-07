@@ -3,7 +3,6 @@ package tyra314.toolprogression.harvest;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import tyra314.toolprogression.ToolProgressionMod;
 
 import javax.annotation.Nonnull;
 
@@ -13,27 +12,17 @@ public class BlockHelper
     {
         Block block = state.getBlock();
 
-        float hardness = -2F;
-
-        try
-        {
-            hardness = block.getBlockHardness(state, null, null);
-        }
-        catch(Exception e)
-        {
-            ToolProgressionMod.logger.warn("Couldn't get hardness of block: " + getKeyString(state));
-        }
-
         String toolClass = block.getHarvestTool(state);
 
-        if (toolClass == null )
+        if (toolClass == null)
         {
-            return String.format("null=-1@%.1f", hardness);
+            return "null=-1";
         }
 
         int level = block.getHarvestLevel(state);
 
-        return (state.getMaterial().isToolNotRequired() ? "?" : "") + String.format("%s=%d@%.1f", toolClass, level, hardness);
+        return (state.getMaterial().isToolNotRequired() ? "?" : "") +
+               String.format("%s=%d", toolClass, level);
     }
 
     public static String getKeyString(@Nonnull IBlockState state)
