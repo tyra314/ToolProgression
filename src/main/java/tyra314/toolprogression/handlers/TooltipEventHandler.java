@@ -1,34 +1,45 @@
 package tyra314.toolprogression.handlers;
 
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemTool;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.HarvestLevelName;
 
 @SideOnly(Side.CLIENT)
 public class TooltipEventHandler
 {
-    @SubscribeEvent
-    public void onGetToolTipEvent(ItemTooltipEvent event)
+    private static String formatLevel(int level)
     {
-        if(!ConfigHandler.tooltip_enabled)
+        if (HarvestLevelName.levels.containsKey(level))
         {
-            return;
+            return HarvestLevelName.levels.get(level).getFormatted();
         }
 
-        Item item = event.getItemStack().getItem();
+        return String.valueOf(level);
+    }
 
-        int level = item.getHarvestLevel(event.getItemStack(), "pickaxe", null, null);
+    private static void printForClass(ItemTooltipEvent event,
+                                      Item item,
+                                      String tool_class,
+                                      String postfix)
+    {
+        int level = item.getHarvestLevel(event.getItemStack(), tool_class, null, null);
 
-        if (level == -1 && item instanceof ItemTool && item.getToolClasses(event.getItemStack()).contains("pickaxe"))
+        if (level == -1 &&
+            item instanceof ItemTool &&
+            item.getToolClasses(event.getItemStack()).contains(tool_class))
         {
             ItemTool tool = (ItemTool) item;
-            level = tool.getHarvestLevel(event.getItemStack(), "pickaxe", null, null);
+            level = tool.getHarvestLevel(event.getItemStack(), tool_class, null, null);
         }
 
         if (level == -1)
@@ -36,12 +47,47 @@ public class TooltipEventHandler
             return;
         }
 
-        if (HarvestLevelName.levels.containsKey(level))
+        event.getToolTip().add("§eMining Level:§r " + formatLevel(level) + postfix);
+    }
+
+    @SubscribeEvent
+    public void onGetToolTipEvent(ItemTooltipEvent event)
+    {
+        if (!ConfigHandler.tooltip_enabled)
         {
-            event.getToolTip().add(String.format("§fMining Level:§r %s", HarvestLevelName.levels.get(level).getFormatted()));
-        } else
+            return;
+        }
+
+        Item item = event.getItemStack().getItem();
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
         {
-            event.getToolTip().add(String.format("§fMining Level:§r %d", level));
+            if (item instanceof ItemBlock)
+            {
+                Block block = ((ItemBlock) item).getBlock();
+                //noinspection deprecation
+                IBlockState
+                        state =
+                        block.getStateFromMeta(((ItemBlock) item).getDamage(event.getItemStack()));
+
+                String tool_class = block.getHarvestTool(state);
+                int level = block.getHarvestLevel(state);
+
+
+                event.getToolTip()
+                        .add("§eMining Level:§r " + formatLevel(level) + "(" + tool_class + ")");
+            }
+            else
+            {
+                for (String tool_class : item.getToolClasses(event.getItemStack()))
+                {
+                    printForClass(event, item, tool_class, "(" + tool_class + ")");
+                }
+            }
+        }
+        else
+        {
+            printForClass(event, item, "pickaxe", "");
         }
     }
 }
