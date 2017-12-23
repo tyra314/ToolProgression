@@ -65,16 +65,26 @@ public class TiCEventHandler
     @SubscribeEvent
     public void handleToolModifier(TinkerCraftingEvent.ToolModifyEvent event)
     {
-        int harvestLevel = getToolHarvestLevel(event.getItemStack());
+        ItemStack tool = event.getToolBeforeModification();
+
+        int harvestLevelMod = 0;
 
         for (IModifier mod : TinkerUtil.getModifiers(event.getItemStack()))
         {
-            if (mod instanceof ModDiamond || mod instanceof ModEmerald)
+            int harvestLevelbefore = getToolHarvestLevel(tool);
+
+            mod.apply(tool);
+
+            int harvestLevelAfter = getToolHarvestLevel(tool);
+
+            if ((mod instanceof ModDiamond || mod instanceof ModEmerald) && harvestLevelAfter != harvestLevelbefore)
             {
-                harvestLevel--;
+                harvestLevelMod--;
             }
         }
 
-        setToolHarvestLevel(event.getItemStack(), harvestLevel);
+        int harvestLevel = getToolHarvestLevel(event.getItemStack());
+
+        setToolHarvestLevel(event.getItemStack(), harvestLevel + harvestLevelMod);
     }
 }
