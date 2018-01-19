@@ -59,9 +59,16 @@ repositories {
     maven { // GameStages
         url 'https://maven.mcmoddev.com'
     }
+
+    maven { // CurseForge
+        url 'https://minecraft.curseforge.com/api/maven/'
+    }
 }
 
 dependencies {
+    deobfCompile "ex-nihilo-creatio:exnihilocreatio:1.12:0.1.5"
+    deobfCompile "ex-compressum:ExCompressum_1.12.2:3.0.11"
+
     deobfCompile "slimeknights:TConstruct:${tc_version}"
     deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
 

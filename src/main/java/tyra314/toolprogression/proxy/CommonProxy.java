@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.compat.exnihilo.ECHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.compat.waila.WailaPlugin;
-import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.handlers.HarvestEventHandler;
 import tyra314.toolprogression.harvest.Overwrites;
 
@@ -67,7 +67,6 @@ public class CommonProxy
                 new Configuration(new File(directory.getPath(),
                         "tool_progression/materials_overwrites.cfg"));
 
-        ConfigHandler.readBaseConfig();
 
         if (TiCHelper.isLoaded())
         {
@@ -120,6 +119,11 @@ public class CommonProxy
         blocks_config.save();
         tools_config.save();
         mats_config.save();
+
+        if (ECHelper.isLoaded())
+        {
+            ECHelper.postInit();
+        }
 
         ToolProgressionMod.logger.info("Finished doing stupid things");
     }

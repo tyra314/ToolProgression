@@ -3,6 +3,8 @@ package tyra314.toolprogression.harvest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import tyra314.toolprogression.compat.exnihilo.ECEventHandler;
+import tyra314.toolprogression.compat.exnihilo.ECHelper;
 import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
@@ -42,6 +44,16 @@ public class HarvestHelper
         }
 
         // if we make it here, we have a "tool" in our hands
+
+        if (ECHelper.isLoaded())
+        {
+            if (ECEventHandler.isHammerOrCrook(tool) && ECEventHandler.canHarvest(tool, state))
+            {
+                return Result.NONE;
+            }
+        }
+
+        // if we make it here, we don't have a Ex Nihilo something
 
         int tool_level = tool.getItem().getHarvestLevel(tool, required_toolclass, player, state);
 
