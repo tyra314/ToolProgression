@@ -223,7 +223,7 @@ public class HarvestEventHandler
 
                         for (ItemStack drop : drops)
                         {
-                            state.getBlock().spawnAsEntity(event.getWorld(), event.getPos(), drop);
+                            block.spawnAsEntity(event.getWorld(), event.getPos(), drop);
                         }
                     }
                 }
