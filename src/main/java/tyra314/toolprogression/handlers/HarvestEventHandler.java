@@ -1,5 +1,6 @@
 package tyra314.toolprogression.handlers;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -7,9 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -18,6 +21,8 @@ import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.HarvestHelper;
+
+import java.util.List;
 
 public class HarvestEventHandler
 {
@@ -121,24 +126,40 @@ public class HarvestEventHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    /*
+     * Okay, this is not the best solution, BUT we have to run after the handler from OreStages, but
+     * before everyone else. (Actually, we have to run after every other mod trying to change
+     * harvestability for some reason.)
+     */
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBreakSpeed(PlayerEvent.BreakSpeed event)
     {
         if (!HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
                 event.getState()))
         {
+            // If we decide that it is not allowed to break the block, just cancel the event.
             event.setCanceled(true);
         }
         else
         {
+            // If we decide that it is allowed to break the block, we have to fix the break speed
+
+            // First, get the blockstate, we are actually trying to break
             IBlockState state = event.getState();
             if (GSHelper.isLoaded())
             {
                 state = GSEventHandler.getStagedBlockState(event.getEntityPlayer(), state);
             }
 
+            // Then, get the break speed we would have, if we would break the actual blockstate
+            // we have to use this value, as OreStages may already have changed the speed
             float f = getBreakSpeedDefault(event.getEntityPlayer(), state);
 
+            // Now it get's ugly.
+            // In ForgeHooks::blockStrenght(), from which this event will be invoked indirectly,
+            // there is an if-statement, which distinguishes whether or not, the player can break
+            // the original block. Depending on this, it will slow down break speed to 30 percent.
+            // If we overrule the harvestability, we have to counter this penalty.
             if (!canHarvestBlockDefault(event.getState(), event.getEntityPlayer()))
             {
                 f *= 100F / 30F;
@@ -148,17 +169,19 @@ public class HarvestEventHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onBreakEvent(BlockEvent.BreakEvent event)
     {
+        Block block = event.getState().getBlock();
+
         if (HarvestHelper.canPlayerHarvestBlock(event.getPlayer(), event.getState()) &&
-            !event.getState().getBlock()
-                    .canHarvestBlock(event.getWorld(), event.getPos(), event.getPlayer()))
+            !block.canHarvestBlock(event.getWorld(), event.getPos(), event.getPlayer()))
         {
             IBlockState state = event.getState();
             if (GSHelper.isLoaded())
             {
                 state = GSEventHandler.getStagedBlockState(event.getPlayer(), state);
+                block = state.getBlock();
             }
 
             int fortune = 0;
@@ -175,15 +198,42 @@ public class HarvestEventHandler
                 dropBlockDefault(state, event.getWorld(), event.getPos(), fortune);
             }
 
-            event.setExpToDrop(state.getBlock()
-                    .getExpDrop(state, event.getWorld(), event.getPos(), fortune));
+            event.setExpToDrop(block.getExpDrop(state, event.getWorld(), event.getPos(), fortune));
 
-            if (ConfigHandler.dupe_fix_hacky_macky)
+
+            // This is technically still a bad hack, but orestages run on lowest priority. We are
+            // only on low priority, so we should be running before orestages.
+            if (ConfigHandler.dupe_fix_hacky_macky || GSHelper.isLoaded())
             {
                 // This is probably the worst idea I ever had.
                 // Come to my issue tracker and yell at me.
+
+                if (block instanceof IShearable)
+                {
+                    if (((IShearable) block).isShearable(
+                            event.getPlayer().getActiveItemStack(),
+                            event.getWorld(),
+                            event.getPos()))
+                    {
+                        List<ItemStack> drops = ((IShearable) block).onSheared(
+                                event.getPlayer().getActiveItemStack(),
+                                event.getWorld(),
+                                event.getPos(),
+                                fortune);
+
+                        for (ItemStack drop : drops)
+                        {
+                            state.getBlock().spawnAsEntity(event.getWorld(), event.getPos(), drop);
+                        }
+                    }
+                }
+
+                block.onBlockHarvested(event.getWorld(), event.getPos(), state, event.getPlayer());
+
                 event.setCanceled(true);
                 event.getWorld().setBlockToAir(event.getPos());
+
+                event.getPlayer().addStat(StatList.getBlockStats(event.getState().getBlock()));
             }
         }
     }
