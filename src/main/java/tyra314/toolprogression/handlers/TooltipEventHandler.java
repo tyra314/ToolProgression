@@ -3,6 +3,7 @@ package tyra314.toolprogression.handlers;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemTool;
@@ -32,14 +33,22 @@ public class TooltipEventHandler
                                       String tool_class,
                                       String postfix)
     {
-        int level = item.getHarvestLevel(event.getItemStack(), tool_class, null, null);
+        int level = item.getHarvestLevel(
+                event.getItemStack(),
+                tool_class,
+                null,
+                Blocks.STONE.getDefaultState());
 
         if (level == -1 &&
             item instanceof ItemTool &&
             item.getToolClasses(event.getItemStack()).contains(tool_class))
         {
             ItemTool tool = (ItemTool) item;
-            level = tool.getHarvestLevel(event.getItemStack(), tool_class, null, null);
+            level = tool.getHarvestLevel(
+                    event.getItemStack(),
+                    tool_class,
+                    null,
+                    Blocks.STONE.getDefaultState());
         }
 
         if (level == -1)
@@ -65,10 +74,9 @@ public class TooltipEventHandler
             if (item instanceof ItemBlock)
             {
                 Block block = ((ItemBlock) item).getBlock();
-                //noinspection deprecation
-                IBlockState
-                        state =
-                        block.getStateFromMeta(((ItemBlock) item).getDamage(event.getItemStack()));
+
+                @SuppressWarnings("deprecation")
+                IBlockState state = block.getStateFromMeta(item.getDamage(event.getItemStack()));
 
                 String tool_class = block.getHarvestTool(state);
                 int level = block.getHarvestLevel(state);
