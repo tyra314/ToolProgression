@@ -43,7 +43,7 @@ public class TiCMiningLevels
         if (tcmininglevels == null)
         {
             ToolProgressionMod.logger.log(Level.WARN,
-                    "Couldn't applyTo compat for TiC mining levels :(");
+                    "Couldn't apply compat for TiC mining levels :(");
 
             return;
         }
