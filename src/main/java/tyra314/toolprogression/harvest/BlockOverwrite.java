@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class BlockOverwrite
 {
     private static final String REGEX =
-            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
+            "^(?<force>\\!)?(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
 
     private static final Pattern pattern;
 
@@ -26,6 +26,7 @@ public class BlockOverwrite
     public int level;
     public boolean toolRequired;
     public float hardness;
+    public boolean destroyable;
 
     public BlockOverwrite(String toolclass, int level, boolean toolRequired)
     {
@@ -33,14 +34,9 @@ public class BlockOverwrite
         this.level = level;
         this.toolRequired = toolRequired;
         this.hardness = -1F;
+        this.destroyable = false;
     }
 
-    public BlockOverwrite(String toolclass, int level, boolean toolRequired, float hardness)
-    {
-        this(toolclass, level, toolRequired);
-
-        this.hardness = hardness;
-    }
 
     public static void applyToAllStates(Block block)
     {
@@ -71,26 +67,52 @@ public class BlockOverwrite
             return null;
         }
 
-        boolean toolRequired = matcher.group("effective") == null;
-
         String toolClass = matcher.group("toolclass");
         int level = Integer.parseInt(matcher.group("level"));
+        boolean toolRequired = matcher.group("effective") == null;
+
+        BlockOverwrite b = new BlockOverwrite(toolClass, level, toolRequired);
+
+        if(matcher.group("force") != null)
+        {
+            b.destroyable = true;
+            if(!b.toolRequired)
+            {
+                return null;
+            }
+        }
 
         String hardness = matcher.group("hardness");
+        if (hardness != null)
+        {
+            b.hardness =  Float.parseFloat(hardness);
+        }
 
-        if (hardness == null)
-        {
-            return new BlockOverwrite(toolClass, level, toolRequired);
-        }
-        else
-        {
-            return new BlockOverwrite(toolClass, level, toolRequired, Float.parseFloat(hardness));
-        }
+        return b;
     }
 
     public String getConfig()
     {
-        return (toolRequired ? "" : "?") + toolclass + "=" + String.valueOf(level);
+        StringBuilder str = new StringBuilder();
+
+        if(destroyable)
+        {
+            str.append("!");
+        }
+
+        if(!toolRequired)
+        {
+            str.append("?");
+        }
+
+        str.append(toolclass).append("=").append(level);
+
+        if(hardness >= 0F)
+        {
+            str.append("@").append(hardness);
+        }
+
+        return str.toString();
     }
 
     public void addOverwrite(String toolClass, int level, boolean toolRequired)

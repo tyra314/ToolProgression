@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
+import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestHelper;
 
 import java.util.List;
@@ -134,39 +135,48 @@ public class HarvestEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBreakSpeed(PlayerEvent.BreakSpeed event)
     {
+        // First, get the blockstate, we are actually trying to break
+        IBlockState state = event.getState();
+        if (GSHelper.isLoaded())
+        {
+            state = GSEventHandler.getStagedBlockState(event.getEntityPlayer(), state);
+        }
+
+        // Then, get the break speed we would have, if we would break the actual blockstate
+        // we have to use this value, as OreStages may already have changed the speed
+        float f = getBreakSpeedDefault(event.getEntityPlayer(), state);
+
+        // We now normalize the breakspeed to the one, if the could harvest the block.
+        // Now it get's ugly.
+        // In ForgeHooks::blockStrenght(), from which this event will be invoked indirectly,
+        // there is an if-statement, which distinguishes whether or not, the player can break
+        // the original block. Depending on this, it will slow down break speed to 30 percent.
+        // If we overrule the harvestability, we have to counter this penalty.
+        if (!canHarvestBlockDefault(event.getState(), event.getEntityPlayer()))
+        {
+            f *= 100F / 30F;
+        }
+
         if (!HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
                 event.getState()))
         {
-            // If we decide that it is not allowed to break the block, just cancel the event.
-            event.setCanceled(true);
-        }
-        else
-        {
-            // If we decide that it is allowed to break the block, we have to fix the break speed
+            // If we decide that the block is not harvestable ...
 
-            // First, get the blockstate, we are actually trying to break
-            IBlockState state = event.getState();
-            if (GSHelper.isLoaded())
+            BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
+            if (ConfigHandler.all_blocks_destroyable || (overwrite != null && overwrite.destroyable))
             {
-                state = GSEventHandler.getStagedBlockState(event.getEntityPlayer(), state);
+                // ...and the block is destroyable, then we apply the break speed penalty once again.
+                f *= 30F / 100F;
+
             }
-
-            // Then, get the break speed we would have, if we would break the actual blockstate
-            // we have to use this value, as OreStages may already have changed the speed
-            float f = getBreakSpeedDefault(event.getEntityPlayer(), state);
-
-            // Now it get's ugly.
-            // In ForgeHooks::blockStrenght(), from which this event will be invoked indirectly,
-            // there is an if-statement, which distinguishes whether or not, the player can break
-            // the original block. Depending on this, it will slow down break speed to 30 percent.
-            // If we overrule the harvestability, we have to counter this penalty.
-            if (!canHarvestBlockDefault(event.getState(), event.getEntityPlayer()))
+            else
             {
-                f *= 100F / 30F;
+                // ...or else we just cancel the event and thus prevent the block from being broken
+                event.setCanceled(true);
             }
-
-            event.setNewSpeed(f);
         }
+
+        event.setNewSpeed(f);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -235,6 +245,23 @@ public class HarvestEventHandler
 
                 event.getPlayer().addStat(StatList.getBlockStats(event.getState().getBlock()));
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onDropEvent(BlockEvent.HarvestDropsEvent event)
+    {
+        if (event.getHarvester() == null)
+        {
+            return;
+        }
+
+        // This disables the drops of harvested blocks, which aren't harvestable, but destroyable
+        if (!HarvestHelper.canPlayerHarvestBlock(event.getHarvester(), event.getState()))
+        {
+            // Well... I can't cancel the event, so lets hope, just setting it to zero will take
+            // take care of that. Expect incoming bugs because of shitz and gigglez. FeelsBadMan
+            event.setDropChance(0);
         }
     }
 }
