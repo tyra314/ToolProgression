@@ -1,5 +1,8 @@
 package tyra314.toolprogression.handlers;
 
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
+import mcjty.lib.api.smartwrench.SmartWrench;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -7,6 +10,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.NonNullList;
@@ -163,7 +167,8 @@ public class HarvestEventHandler
             // If we decide that the block is not harvestable ...
 
             BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
-            if (ConfigHandler.all_blocks_destroyable || (overwrite != null && overwrite.destroyable))
+            if (ConfigHandler.all_blocks_destroyable ||
+                (overwrite != null && overwrite.destroyable))
             {
                 // ...and the block is destroyable, then we apply the break speed penalty once again.
                 f *= 30F / 100F;
@@ -248,17 +253,60 @@ public class HarvestEventHandler
         }
     }
 
+    private boolean isWrench(ItemStack stack)
+    {
+        Item item = stack.getItem();
+
+        if (item instanceof IToolWrench)
+        {
+            return true;
+        }
+
+        if (item instanceof IToolHammer)
+        {
+            return true;
+        }
+
+        if (item instanceof SmartWrench)
+        {
+            return true;
+        }
+
+        // It seems like I don't need to check for IC2 wrenches. God bless.
+
+        return false;
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onDropEvent(BlockEvent.HarvestDropsEvent event)
     {
+        // Okay, I use this event to accomplish one specific behavior. I want to be able to let
+        // players break a block, but it shall not drop anything. Therefore, I neither can't
+        // cancel the BreakSpeed nor the BlockBreak events. However, in this event, I can't know
+        // which and how the block was broken. So I must use some guessing here.
+
+
+        // if there is no harvester, I can't decide anything. So skip it.
+        // TODO: What about harvesters other than a player?
         if (event.getHarvester() == null)
         {
             return;
         }
 
-        // This disables the drops of harvested blocks, which aren't harvestable, but destroyable
         if (!HarvestHelper.canPlayerHarvestBlock(event.getHarvester(), event.getState()))
         {
+            if (isWrench(event.getHarvester().getHeldItemMainhand()))
+            {
+                // if the harvester has a wrench in his hand, I assume that this wrench was used
+                // and therefore it can circumvent my checks.
+
+                // Fortunately, a wrench isn't a good pickaxe, so it should be fine harvesting stuff
+
+                return;
+            }
+
+            // This disables the drops of harvested blocks, which aren't harvestable, but destroyable
+
             // Well... I can't cancel the event, so lets hope, just setting it to zero will take
             // take care of that. Expect incoming bugs because of shitz and gigglez. FeelsBadMan
             event.setDropChance(0);
