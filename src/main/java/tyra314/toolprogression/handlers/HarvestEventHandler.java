@@ -184,6 +184,20 @@ public class HarvestEventHandler
         event.setNewSpeed(f);
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    void onHarvestCheck(PlayerEvent.HarvestCheck event)
+    {
+        // actually I'd say, this event is meaningless, however I fix FakePlayers with that :C
+
+        if (event.getTargetBlock() == null || event.getEntityPlayer() == null)
+        {
+            return;
+        }
+
+        event.setCanHarvest(HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
+                event.getTargetBlock()));
+    }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onBreakEvent(BlockEvent.BreakEvent event)
     {
