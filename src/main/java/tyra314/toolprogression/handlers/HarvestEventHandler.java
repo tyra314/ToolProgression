@@ -184,7 +184,7 @@ public class HarvestEventHandler
         event.setNewSpeed(f);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     void onHarvestCheck(PlayerEvent.HarvestCheck event)
     {
         // actually I'd say, this event is meaningless, however I fix FakePlayers with that :C
