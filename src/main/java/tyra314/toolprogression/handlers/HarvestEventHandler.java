@@ -1,8 +1,5 @@
 package tyra314.toolprogression.handlers;
 
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
-import mcjty.lib.api.smartwrench.SmartWrench;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,8 +18,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import tyra314.toolprogression.compat.buildcraft.BCHelper;
+import tyra314.toolprogression.compat.cofh.CoFHHelper;
 import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
+import tyra314.toolprogression.compat.rftools.RFHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestHelper;
@@ -271,17 +271,17 @@ public class HarvestEventHandler
     {
         Item item = stack.getItem();
 
-        if (item instanceof IToolWrench)
+        if (BCHelper.isLoaded() && BCHelper.isWrench(item))
         {
             return true;
         }
 
-        if (item instanceof IToolHammer)
+        if (CoFHHelper.isLoaded() && CoFHHelper.isHammer(item))
         {
             return true;
         }
 
-        if (item instanceof SmartWrench)
+        if (RFHelper.isLoaded() && RFHelper.isWrench(item))
         {
             return true;
         }
