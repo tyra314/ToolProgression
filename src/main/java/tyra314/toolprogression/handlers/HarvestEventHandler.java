@@ -14,6 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -301,8 +302,8 @@ public class HarvestEventHandler
 
 
         // if there is no harvester, I can't decide anything. So skip it.
-        // TODO: What about harvesters other than a player?
-        if (event.getHarvester() == null)
+        // also, if we have a FakePlayer in front of our face, we give up here
+        if (event.getHarvester() == null || event.getHarvester() instanceof FakePlayer)
         {
             return;
         }
