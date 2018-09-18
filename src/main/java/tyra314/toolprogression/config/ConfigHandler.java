@@ -22,6 +22,8 @@ public class ConfigHandler
     public static boolean waila_show_harvestable = false;
 
     public static boolean tconstruct_overwrite = true;
+    public static boolean tconstruct_overwrite_diamond = true;
+
 
     public static boolean game_stages_compat = true;
     public static boolean dupe_fix_hacky_macky = false;
@@ -131,6 +133,10 @@ public class ConfigHandler
 
         tconstruct_overwrite = cfg.getBoolean("tconstruct", CATEGORY_COMPAT,
                 tconstruct_overwrite, "Set this to false, to leave Tinkers alone.");
+
+        tconstruct_overwrite_diamond = cfg.getBoolean("tconstruct", CATEGORY_COMPAT,
+                tconstruct_overwrite_diamond, "Set this to false, to disable the overwrite of the diamond and emerald modifier.");
+
 
         cofh_compat = cfg.getBoolean("cofh", CATEGORY_COMPAT,
                 cofh_compat, "Set this to false, to leave CoFHCore alone.");

@@ -13,6 +13,7 @@ import slimeknights.tconstruct.library.utils.TinkerUtil;
 import slimeknights.tconstruct.tools.modifiers.ModDiamond;
 import slimeknights.tconstruct.tools.modifiers.ModEmerald;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.proxy.CommonProxy;
 
 @SuppressWarnings("WeakerAccess")
@@ -65,6 +66,11 @@ public class TiCEventHandler
     @SubscribeEvent
     public void handleToolModifier(TinkerCraftingEvent.ToolModifyEvent event)
     {
+        if(!ConfigHandler.tconstruct_overwrite_diamond)
+        {
+            return;
+        }
+
         ItemStack tool = event.getToolBeforeModification();
 
         int harvestLevelMod = 0;
