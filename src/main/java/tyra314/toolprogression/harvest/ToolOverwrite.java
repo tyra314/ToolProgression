@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.config.ConfigHandler;
 
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class ToolOverwrite
         {
             overwrite.apply(item);
         }
+        OverwrittenContent.tools.put(item.getUnlocalizedName(), overwrite);
     }
 
     public static ToolOverwrite readFromConfig(String config)
