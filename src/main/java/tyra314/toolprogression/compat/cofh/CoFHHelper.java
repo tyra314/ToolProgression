@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 public class CoFHHelper
 {
     public static final String CLASS_NAME = "cofh.core.item.tool.ItemToolCore";
-    public static final String HAMMER_NAME = "cofh.api.item.IToolHammer";
 
     private static Class<?> cofh_core = null;
 
@@ -62,22 +61,6 @@ public class CoFHHelper
     }
 
     public static boolean isInstance(Item item)
-    {
-        try
-        {
-            Class<?> ToolCore = Class.forName(CLASS_NAME);
-
-            return ToolCore.isInstance(item);
-
-        }
-        catch (ClassNotFoundException ignored)
-        {
-        }
-
-        return false;
-    }
-
-    public static boolean isHammer(Item item)
     {
         try
         {

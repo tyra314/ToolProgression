@@ -7,7 +7,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.NonNullList;
@@ -19,11 +18,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import tyra314.toolprogression.compat.buildcraft.BCHelper;
-import tyra314.toolprogression.compat.cofh.CoFHHelper;
 import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
-import tyra314.toolprogression.compat.rftools.RFHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.HarvestHelper;
@@ -127,7 +123,7 @@ public class HarvestEventHandler
         {
             for (ItemStack drop : drops)
             {
-                state.getBlock().spawnAsEntity(world, pos, drop);
+                Block.spawnAsEntity(world, pos, drop);
             }
         }
     }
@@ -185,20 +181,6 @@ public class HarvestEventHandler
         event.setNewSpeed(f);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    void onHarvestCheck(PlayerEvent.HarvestCheck event)
-    {
-        // actually I'd say, this event is meaningless, however I fix FakePlayers with that :C
-
-        if (event.getTargetBlock() == null || event.getEntityPlayer() == null)
-        {
-            return;
-        }
-
-        event.setCanHarvest(HarvestHelper.canPlayerHarvestBlock(event.getEntityPlayer(),
-                event.getTargetBlock()));
-    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onBreakEvent(BlockEvent.BreakEvent event)
     {
@@ -253,7 +235,7 @@ public class HarvestEventHandler
 
                         for (ItemStack drop : drops)
                         {
-                            block.spawnAsEntity(event.getWorld(), event.getPos(), drop);
+                            Block.spawnAsEntity(event.getWorld(), event.getPos(), drop);
                         }
                     }
                 }
@@ -266,65 +248,26 @@ public class HarvestEventHandler
                 event.getPlayer().addStat(StatList.getBlockStats(event.getState().getBlock()));
             }
         }
-    }
-
-    private boolean isWrench(ItemStack stack)
-    {
-        Item item = stack.getItem();
-
-        if (BCHelper.isLoaded() && BCHelper.isWrench(item))
+        else if (!HarvestHelper.canPlayerHarvestBlock(event.getPlayer(), event.getState()))
         {
-            return true;
-        }
-
-        if (CoFHHelper.isLoaded() && CoFHHelper.isHammer(item))
-        {
-            return true;
-        }
-
-        if (RFHelper.isLoaded() && RFHelper.isWrench(item))
-        {
-            return true;
-        }
-
-        // It seems like I don't need to check for IC2 wrenches. God bless.
-
-        return false;
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onDropEvent(BlockEvent.HarvestDropsEvent event)
-    {
-        // Okay, I use this event to accomplish one specific behavior. I want to be able to let
-        // players break a block, but it shall not drop anything. Therefore, I neither can't
-        // cancel the BreakSpeed nor the BlockBreak events. However, in this event, I can't know
-        // which and how the block was broken. So I must use some guessing here.
-
-
-        // if there is no harvester, I can't decide anything. So skip it.
-        // also, if we have a FakePlayer in front of our face, we give up here
-        if (event.getHarvester() == null || event.getHarvester() instanceof FakePlayer)
-        {
-            return;
-        }
-
-        if (!HarvestHelper.canPlayerHarvestBlock(event.getHarvester(), event.getState()))
-        {
-            if (isWrench(event.getHarvester().getHeldItemMainhand()))
+            // if there is no harvester, I can't decide anything. So skip it.
+            // also, if we have a FakePlayer in front of our face, we give up here
+            if (event.getPlayer() == null || event.getPlayer() instanceof FakePlayer)
             {
-                // if the harvester has a wrench in his hand, I assume that this wrench was used
-                // and therefore it can circumvent my checks.
-
-                // Fortunately, a wrench isn't a good pickaxe, so it should be fine harvesting stuff
-
                 return;
             }
 
-            // This disables the drops of harvested blocks, which aren't harvestable, but destroyable
+            // If we decide that the block is not harvestable ...
+            IBlockState state = event.getWorld().getBlockState(event.getPos());
+            BlockOverwrite overwrite = ConfigHandler.blockOverwrites.get(state);
+            if (ConfigHandler.all_blocks_destroyable ||
+                (overwrite != null && overwrite.destroyable))
 
-            // Well... I can't cancel the event, so lets hope, just setting it to zero will take
-            // take care of that. Expect incoming bugs because of shitz and gigglez. FeelsBadMan
-            event.setDropChance(0);
+            {
+                // This should not drop anything
+                event.setCanceled(true);
+                event.getWorld().setBlockToAir(event.getPos());
+            }
         }
     }
 }
