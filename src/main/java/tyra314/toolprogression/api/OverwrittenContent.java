@@ -6,7 +6,8 @@ import net.minecraft.item.Item.ToolMaterial;
 
 public class OverwrittenContent
 {
-    public static Map<String,BlockOverwrite> blocks = new HashMap<String,BlockOverwrite>();
-    public static Map<String,ToolOverwrite> tools = new HashMap<String,ToolOverwrite>();
-    public static Map<ToolMaterial,MaterialOverwrite> materials = new HashMap<ToolMaterial,MaterialOverwrite>();
+    public static final Map<String,BlockOverwrite> blocks = new HashMap<>();
+    public static final Map<String,ToolOverwrite> tools = new HashMap<>();
+    public static final Map<ToolMaterial,MaterialOverwrite> materials = new HashMap<>();
+    public static final Map<Integer, HarvestLevelName> mining_level = new HashMap<>();
 }

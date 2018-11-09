@@ -3,6 +3,7 @@ package tyra314.toolprogression.config;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.harvest.HarvestLevelName;
 import tyra314.toolprogression.proxy.CommonProxy;
 
@@ -94,7 +95,7 @@ public class ConfigHandler
             HarvestLevelName level = HarvestLevelName.readFromConfig(name);
             if (level != null)
             {
-                HarvestLevelName.levels.put(level.getLevel(), level);
+                OverwrittenContent.mining_level.put(level.getLevel(), level);
 
                 ToolProgressionMod.logger.log(Level.INFO, String.format("Mining level: %d - %s",
                         level.getLevel(), level.getName()));

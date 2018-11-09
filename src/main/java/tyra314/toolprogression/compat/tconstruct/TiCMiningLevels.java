@@ -2,6 +2,7 @@ package tyra314.toolprogression.compat.tconstruct;
 
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.HarvestLevelName;
 
@@ -51,9 +52,9 @@ public class TiCMiningLevels
         for (Map.Entry<Integer, String> it : tcmininglevels.entrySet())
         {
             int key = it.getKey();
-            if (!HarvestLevelName.levels.containsKey(key))
+            if (!OverwrittenContent.mining_level.containsKey(key))
             {
-                HarvestLevelName.levels.put(key, new HarvestLevelName(key, it.getValue()));
+                OverwrittenContent.mining_level.put(key, new HarvestLevelName(key, it.getValue()));
                 ToolProgressionMod.logger.log(Level.INFO,
                         "Merged harvest level from Tinkers' Construct: " +
                         String.valueOf(key) +
@@ -64,7 +65,7 @@ public class TiCMiningLevels
 
         tcmininglevels.clear();
 
-        for (HarvestLevelName level : HarvestLevelName.levels.values())
+        for (HarvestLevelName level : OverwrittenContent.mining_level.values())
         {
             tcmininglevels.put(level.getLevel(), level.getFormatted());
         }

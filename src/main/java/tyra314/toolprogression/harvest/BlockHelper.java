@@ -46,8 +46,7 @@ public class BlockHelper
             {
                 if (guessTool(tools[i], state))
                 {
-                    String
-                            toolclass =
+                    String toolclass =
                             tools[i].getItem().getToolClasses(tools[i]).iterator().next();
 
                     // let's do everyone a favor, do we?

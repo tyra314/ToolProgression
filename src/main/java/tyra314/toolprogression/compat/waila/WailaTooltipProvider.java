@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.compat.gamestages.GSEventHandler;
 import tyra314.toolprogression.compat.gamestages.GSHelper;
 import tyra314.toolprogression.config.ConfigHandler;
@@ -106,9 +107,9 @@ public class WailaTooltipProvider implements IWailaDataProvider
 
                 String harvest_level = String.valueOf(required_level);
 
-                if (HarvestLevelName.levels.containsKey(required_level))
+                if (OverwrittenContent.mining_level.containsKey(required_level))
                 {
-                    harvest_level = HarvestLevelName.levels.get(required_level).getFormatted();
+                    harvest_level = OverwrittenContent.mining_level.get(required_level).getFormatted();
                 }
 
                 currenttip.add(0, String.format("Harvest Level : %s", harvest_level));

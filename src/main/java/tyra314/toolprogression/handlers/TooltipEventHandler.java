@@ -12,17 +12,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.config.ConfigHandler;
-import tyra314.toolprogression.harvest.HarvestLevelName;
 
 @SideOnly(Side.CLIENT)
 public class TooltipEventHandler
 {
     private static String formatLevel(int level)
     {
-        if (HarvestLevelName.levels.containsKey(level))
+        if (OverwrittenContent.mining_level.containsKey(level))
         {
-            return HarvestLevelName.levels.get(level).getFormatted();
+            return OverwrittenContent.mining_level.get(level).getFormatted();
         }
 
         return String.valueOf(level);

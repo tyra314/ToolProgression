@@ -1,12 +1,7 @@
 package tyra314.toolprogression.harvest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class HarvestLevelName
 {
-    public static final Map<Integer, HarvestLevelName> levels = new HashMap<>();
-
     private final String name;
     private final int level;
     private String format = null;
