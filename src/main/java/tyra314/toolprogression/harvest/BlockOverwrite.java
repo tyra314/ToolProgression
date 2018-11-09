@@ -5,6 +5,7 @@ import net.minecraft.block.state.IBlockState;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.config.ConfigHandler;
+import tyra314.toolprogression.api.OverwrittenContent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +57,7 @@ public class BlockOverwrite
         {
             overwrite.apply(state);
         }
+        OverwrittenContent.blocks.put(state.getBlock().getUnlocalizedName(), overwrite);
     }
 
     public static BlockOverwrite createFromConfig(String config)

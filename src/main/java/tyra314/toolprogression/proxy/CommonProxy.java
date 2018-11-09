@@ -10,12 +10,15 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.compat.exnihilo.ECHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.compat.waila.WailaPlugin;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.handlers.HarvestEventHandler;
+import tyra314.toolprogression.harvest.BlockHelper;
+import tyra314.toolprogression.harvest.BlockOverwrite;
 import tyra314.toolprogression.harvest.Overwrites;
 
 import java.io.File;

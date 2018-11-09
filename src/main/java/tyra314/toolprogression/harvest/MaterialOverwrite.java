@@ -1,6 +1,7 @@
 package tyra314.toolprogression.harvest;
 
 import net.minecraft.item.Item;
+import tyra314.toolprogression.api.OverwrittenContent;
 import tyra314.toolprogression.config.ConfigHandler;
 
 public class MaterialOverwrite
@@ -29,6 +30,7 @@ public class MaterialOverwrite
         {
             overwrite.applyTo(mat);
         }
+        OverwrittenContent.materials.put(mat, overwrite);
     }
 
     public String getConfig()
