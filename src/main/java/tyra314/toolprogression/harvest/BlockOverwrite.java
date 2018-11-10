@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class BlockOverwrite
 {
     private static final String REGEX =
-            "^(?<force>\\!)?(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
+            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
 
     private static final Pattern pattern;
 
@@ -27,7 +27,6 @@ public class BlockOverwrite
     public int level;
     public boolean toolRequired;
     public float hardness;
-    public boolean destroyable;
 
     public BlockOverwrite(String toolclass, int level, boolean toolRequired)
     {
@@ -35,7 +34,6 @@ public class BlockOverwrite
         this.level = level;
         this.toolRequired = toolRequired;
         this.hardness = -1F;
-        this.destroyable = false;
     }
 
 
@@ -75,15 +73,6 @@ public class BlockOverwrite
 
         BlockOverwrite b = new BlockOverwrite(toolClass, level, toolRequired);
 
-        if(matcher.group("force") != null)
-        {
-            b.destroyable = true;
-            if(!b.toolRequired)
-            {
-                return null;
-            }
-        }
-
         String hardness = matcher.group("hardness");
         if (hardness != null)
         {
@@ -96,11 +85,6 @@ public class BlockOverwrite
     public String getConfig()
     {
         StringBuilder str = new StringBuilder();
-
-        if(destroyable)
-        {
-            str.append("!");
-        }
 
         if(!toolRequired)
         {
