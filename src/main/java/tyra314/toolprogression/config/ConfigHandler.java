@@ -15,8 +15,6 @@ public class ConfigHandler
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
 
-    public static boolean all_blocks_destroyable = false;
-
     public static boolean tooltip_enabled = true;
 
     public static boolean waila_enabled = true;
@@ -25,6 +23,7 @@ public class ConfigHandler
     public static boolean tconstruct_overwrite = true;
     public static boolean tconstruct_overwrite_diamond = true;
 
+    public static boolean top_compat = true;
 
     public static boolean game_stages_compat = true;
 
@@ -137,15 +136,13 @@ public class ConfigHandler
         tconstruct_overwrite_diamond = cfg.getBoolean("tconstruct", CATEGORY_COMPAT,
                 tconstruct_overwrite_diamond, "Set this to false, to disable the overwrite of the diamond and emerald modifier.");
 
+        top_compat = cfg.getBoolean("top", CATEGORY_COMPAT, top_compat,
+                "Set this to false, to leave TheOneProbe alone.");
 
         cofh_compat = cfg.getBoolean("cofh", CATEGORY_COMPAT,
                 cofh_compat, "Set this to false, to leave CoFHCore alone.");
 
         game_stages_compat = cfg.getBoolean("gamestages", CATEGORY_COMPAT,
                 game_stages_compat, "Set this to false, to leave GameStages alone.");
-
-        all_blocks_destroyable = cfg.getBoolean("all_blocks_destroyable", CATEGORY_GENERAL,
-                all_blocks_destroyable, "Set this to true, if you want to be able to just destroy not harvestable blocks.");
-
     }
 }

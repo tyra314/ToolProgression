@@ -85,7 +85,7 @@ public class CommonProxy
             TiCMiningLevels.overwriteMiningLevels();
         }
 
-        if (TOPHelper.isLoaded())
+        if (TOPHelper.isLoaded() && ConfigHandler.top_compat)
         {
             TOPHelper.overwriteHarvestLevels();
         }
