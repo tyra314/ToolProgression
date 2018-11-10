@@ -27,7 +27,6 @@ public class ConfigHandler
 
 
     public static boolean game_stages_compat = true;
-    public static boolean dupe_fix_hacky_macky = false;
 
     public static boolean cofh_compat = true;
 
@@ -144,9 +143,6 @@ public class ConfigHandler
 
         game_stages_compat = cfg.getBoolean("gamestages", CATEGORY_COMPAT,
                 game_stages_compat, "Set this to false, to leave GameStages alone.");
-
-        dupe_fix_hacky_macky = cfg.getBoolean("dupe_fix_hacky_macky_voodoo_magic_wizardry", CATEGORY_GENERAL,
-                dupe_fix_hacky_macky, "You have a dupe bug? You came in my issue tracker yelling at me? I cried and told you to active this? - If you can answer all these questions with yes, go ahead and set it to true. Otherwise, this setting is better off be left alone. Just like me. Forever alone. T__T");
 
         all_blocks_destroyable = cfg.getBoolean("all_blocks_destroyable", CATEGORY_GENERAL,
                 all_blocks_destroyable, "Set this to true, if you want to be able to just destroy not harvestable blocks.");
