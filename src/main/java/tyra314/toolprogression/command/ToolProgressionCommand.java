@@ -17,6 +17,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import tyra314.toolprogression.ToolProgressionMod;
 import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
+import tyra314.toolprogression.compat.top.TOPHelper;
 import tyra314.toolprogression.config.ConfigHandler;
 import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.BlockOverwrite;
@@ -95,6 +96,11 @@ public class ToolProgressionCommand extends CommandBase
         if (TiCHelper.isLoaded())
         {
             TiCMiningLevels.overwriteMiningLevels();
+        }
+
+        if (TOPHelper.isLoaded())
+        {
+            TOPHelper.overwriteHarvestLevels();
         }
 
         sendMessage(sender, "configuration reloaded.");
