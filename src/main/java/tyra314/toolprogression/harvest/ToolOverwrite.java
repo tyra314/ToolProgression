@@ -16,65 +16,6 @@ public class ToolOverwrite
 {
     private final Map<String, Integer> harvest_levels = new HashMap<>();
 
-    static String getConfig(Item item)
-    {
-        StringBuilder config = new StringBuilder();
-
-        for (String toolclass : item.getToolClasses(new ItemStack(item)))
-        {
-            int level = item.getHarvestLevel(new ItemStack(item), toolclass, null, null);
-
-            String config_line = String.format("%s=%d", toolclass, level);
-
-            if (config.length() > 0)
-            {
-                config.append(",").append(config_line);
-            }
-            else
-            {
-                config.append(config_line);
-            }
-        }
-
-        return config.toString();
-    }
-
-    public static void applyToItem(Item item)
-    {
-        ToolOverwrite overwrite = ConfigHandler.toolOverwrites.get(item);
-
-        if (overwrite != null)
-        {
-            overwrite.apply(item);
-        }
-        OverwrittenContent.tools.put(item.getUnlocalizedName(), overwrite);
-    }
-
-    public static ToolOverwrite readFromConfig(String config)
-    {
-        ToolOverwrite overwrite = new ToolOverwrite();
-
-        String[] tokens = config.split(",");
-
-        for (String token : tokens)
-        {
-            String[] tok = token.split("=");
-
-            if (tok.length == 2)
-            {
-                overwrite.addOverwrite(tok[0], Integer.parseInt(tok[1]));
-            }
-            else
-            {
-                ToolProgressionMod.logger.log(Level.WARN,
-                        "Problem parsing tool overwrite: ",
-                        config);
-            }
-        }
-
-        return overwrite;
-    }
-
     public String getConfig()
     {
         StringBuilder res = new StringBuilder();

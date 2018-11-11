@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.harvest.ToolHelper;
 import tyra314.toolprogression.harvest.ToolOverwrite;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class ToolOverwriteConfig
             {
                 ResourceLocation rl = new ResourceLocation(tool.getKey());
 
-                ToolOverwrite overwrite = ToolOverwrite.readFromConfig(tool.getValue().getString());
+                ToolOverwrite overwrite = ToolHelper.createFromConfigString(tool.getValue().getString());
                 overwrites.put(rl, overwrite);
             }
         }

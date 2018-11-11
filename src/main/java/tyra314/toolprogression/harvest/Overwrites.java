@@ -12,20 +12,20 @@ public class Overwrites
     {
         for (IBlockState state : block.getBlockState().getValidStates())
         {
-            String config = BlockHelper.getConfigFromState(state);
+            String config = BlockHelper.getConfigString(state);
 
             CommonProxy.blocks_config.getString(BlockHelper.getKeyString(state),
                     "block",
                     config,
                     BlockHelper.getKeyString(state));
 
-            BlockOverwrite.applyToState(state);
+            BlockHelper.applyTo(state);
         }
     }
 
     public static void handleItem(Item item)
     {
-        String config = ToolOverwrite.getConfig(item);
+        String config = ToolHelper.getConfigString(item);
 
         if (!config.isEmpty())
         {
@@ -36,7 +36,7 @@ public class Overwrites
                     item.getRegistryName().toString());
         }
 
-        ToolOverwrite.applyToItem(item);
+        ToolHelper.applyToItem(item);
     }
 
     public static void handleMaterial(ItemTool.ToolMaterial mat)

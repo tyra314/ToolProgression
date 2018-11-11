@@ -13,9 +13,9 @@ import tyra314.toolprogression.compat.tconstruct.TiCHelper;
 import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.compat.top.TOPHelper;
 import tyra314.toolprogression.config.ConfigHandler;
-import tyra314.toolprogression.harvest.BlockOverwrite;
+import tyra314.toolprogression.harvest.BlockHelper;
 import tyra314.toolprogression.harvest.MaterialOverwrite;
-import tyra314.toolprogression.harvest.ToolOverwrite;
+import tyra314.toolprogression.harvest.ToolHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class Reload extends SubCommand
 
         for (Block block : block_registry)
         {
-            BlockOverwrite.applyToAllStates(block);
+            BlockHelper.applyToAll(block);
         }
 
         final IForgeRegistry<Item> item_registry = GameRegistry.findRegistry(Item.class);
@@ -49,7 +49,7 @@ public class Reload extends SubCommand
         {
             if (item instanceof ItemTool || item instanceof ItemHoe)
             {
-                ToolOverwrite.applyToItem(item);
+                ToolHelper.applyToItem(item);
             }
         }
 

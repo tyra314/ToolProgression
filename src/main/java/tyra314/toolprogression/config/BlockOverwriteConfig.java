@@ -27,7 +27,7 @@ public class BlockOverwriteConfig
 
     private void handleBlockOverwrite(String block, String config)
     {
-        BlockOverwrite overwrite = BlockOverwrite.createFromConfig(config);
+        BlockOverwrite overwrite = BlockHelper.createFromConfigString(config);
         if (overwrite == null)
         {
             ToolProgressionMod.logger.log(Level.WARN,
