@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import tyra314.toolprogression.api.OverwrittenContent;
@@ -115,7 +117,8 @@ public class BlockHelper
         OverwrittenContent.blocks.put(state.getBlock().getUnlocalizedName(), overwrite);
     }
 
-    public static BlockOverwrite createFromConfigString(String config)
+    public static BlockOverwrite createFromConfigString(String config,
+                                                        BlockOverwrite.OverwriteSource source, String key)
     {
         Matcher matcher = pattern.matcher(config);
 
@@ -128,7 +131,7 @@ public class BlockHelper
         int level = Integer.parseInt(matcher.group("level"));
         boolean toolRequired = matcher.group("effective") == null;
 
-        BlockOverwrite b = new BlockOverwrite(toolClass, level, toolRequired);
+        BlockOverwrite b = new BlockOverwrite(toolClass, level, toolRequired, source, key);
 
         String hardness = matcher.group("hardness");
         if (hardness != null)
@@ -137,5 +140,18 @@ public class BlockHelper
         }
 
         return b;
+    }
+
+    public static String getKeyFromItemStack(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        ItemBlock iblock = (ItemBlock) item;
+        Block block = iblock.getBlock();
+
+        // I don't know, why we shouldn't use that here. Enlighten me, if you do. Thanks.
+        @SuppressWarnings("deprecation")
+        IBlockState state = block.getStateFromMeta(item.getDamage(stack));
+
+        return getKeyString(state);
     }
 }

@@ -96,11 +96,11 @@ public class Set extends SubCommand
 
             if (overwrite == null)
             {
-                overwrite = new BlockOverwrite(itemclass, level, true);
+                overwrite = new BlockOverwrite(itemclass, level, true, BlockOverwrite.OverwriteSource.Single, key);
             }
             else
             {
-                overwrite.addOverwrite(itemclass, level, true);
+                overwrite.addOverwrite(itemclass, level, true, key);
             }
 
             if(args.length >= 4)

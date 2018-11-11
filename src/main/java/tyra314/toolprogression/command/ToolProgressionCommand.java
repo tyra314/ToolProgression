@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import tyra314.toolprogression.ToolProgressionMod;
+import tyra314.toolprogression.command.subcommand.Get;
 import tyra314.toolprogression.command.subcommand.Reload;
 import tyra314.toolprogression.command.subcommand.Set;
 import tyra314.toolprogression.command.subcommand.Unset;
@@ -22,7 +23,8 @@ public class ToolProgressionCommand extends CommandBase
     private static final SubCommand[] subcommands = {
             new Reload(),
             new Set(),
-            new Unset()
+            new Unset(),
+            new Get()
     };
 
     @Override

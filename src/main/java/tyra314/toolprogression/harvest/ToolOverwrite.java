@@ -4,8 +4,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 import tyra314.toolprogression.ToolProgressionMod;
-import tyra314.toolprogression.api.OverwrittenContent;
-import tyra314.toolprogression.config.ConfigHandler;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +12,7 @@ import java.util.Set;
 
 public class ToolOverwrite
 {
-    private final Map<String, Integer> harvest_levels = new HashMap<>();
+    public final Map<String, Integer> harvest_levels = new HashMap<>();
 
     public String getConfig()
     {
