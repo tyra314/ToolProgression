@@ -84,7 +84,7 @@ public class ConfigHandler
 
         cfg.addCustomCategoryComment(CATEGORY_MINING_LEVEL, "The list of all mining level names");
 
-        String[] names = {"0:Wood", "1:Stone:§8%s", "2:Iron:§f%s", "3:Diamond:§b%s"};
+        String[] names = {"0:Stone:§8%s", "1:Iron:§f%s", "2:Diamond:§b%s", "3:Obsidian:§5%s"};
         names = cfg.getStringList("names", CATEGORY_MINING_LEVEL, names, "Canonical names");
 
 
