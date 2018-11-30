@@ -15,6 +15,8 @@ public class ConfigHandler
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
 
+    public static boolean prevent_block_destruction = false;
+
     public static boolean tooltip_enabled = true;
 
     public static boolean waila_enabled = true;
@@ -144,5 +146,8 @@ public class ConfigHandler
 
         game_stages_compat = cfg.getBoolean("gamestages", CATEGORY_COMPAT,
                 game_stages_compat, "Set this to false, to leave GameStages alone.");
+
+        prevent_block_destruction = cfg.getBoolean("prevent_block_destruction", CATEGORY_GENERAL,
+                prevent_block_destruction, "Set this to true, if not harvestable blocks shall not be broken at all.");
     }
 }

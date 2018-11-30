@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class BlockHelper
 {
     private static final String REGEX =
-            "^(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
+            "^(?<force>\\!)?(?<effective>\\?)?(?<toolclass>[^\\?=]+)=(?<level>-?\\d+)(@(?<hardness>.+))?$";
 
     private static final Pattern pattern;
 
@@ -132,6 +132,15 @@ public class BlockHelper
         boolean toolRequired = matcher.group("effective") == null;
 
         BlockOverwrite b = new BlockOverwrite(toolClass, level, toolRequired, source, key);
+
+        if(matcher.group("force") != null)
+        {
+            b.destroyable = true;
+            if(!b.toolRequired)
+            {
+                return null;
+            }
+        }
 
         String hardness = matcher.group("hardness");
         if (hardness != null)

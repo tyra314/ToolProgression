@@ -3,6 +3,7 @@ package tyra314.toolprogression.proxy;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTool;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -15,6 +16,7 @@ import tyra314.toolprogression.compat.tconstruct.TiCMiningLevels;
 import tyra314.toolprogression.compat.top.TOPHelper;
 import tyra314.toolprogression.compat.waila.WailaPlugin;
 import tyra314.toolprogression.config.ConfigHandler;
+import tyra314.toolprogression.handlers.HarvestEventHandler;
 import tyra314.toolprogression.harvest.Overwrites;
 
 import java.io.File;
@@ -79,6 +81,8 @@ public class CommonProxy
 
     public void init(@SuppressWarnings("unused") FMLInitializationEvent e)
     {
+        MinecraftForge.EVENT_BUS.register(new HarvestEventHandler());
+
         if (TiCHelper.isLoaded())
         {
             TiCHelper.init();

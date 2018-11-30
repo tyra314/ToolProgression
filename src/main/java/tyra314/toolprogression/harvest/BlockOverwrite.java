@@ -13,6 +13,9 @@ public class BlockOverwrite
     public OverwriteSource source;
     public String sourceKey;
     public float hardness;
+    public boolean destroyable;
+
+
     public BlockOverwrite(String toolclass,
                           int level,
                           boolean toolRequired,
@@ -25,11 +28,17 @@ public class BlockOverwrite
         this.source = source;
         this.sourceKey = sourceKey;
         this.hardness = -1F;
+        this.destroyable = false;
     }
 
     public String getConfig()
     {
         StringBuilder str = new StringBuilder();
+
+        if(destroyable)
+        {
+            str.append("!");
+        }
 
         if (!toolRequired)
         {
