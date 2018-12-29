@@ -115,8 +115,9 @@ processResources {
 jar {
 
     manifest {
-
-        attributes 'FMLAT': 'toolprogression_at.cfg'
+        attributes 'FMLCorePluginContainsFMLMod': 'true',
+                   'FMLCorePlugin': 'tyra314.toolprogression.core.ToolProgressionPlugin',
+                   'FMLAT': 'toolprogression_at.cfg'
     }
 }
 
