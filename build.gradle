@@ -110,7 +110,7 @@ task coreJar(type: Jar) {
     }
     manifest {
         attributes "FMLCorePlugin": 'tyra314.toolprogression.core.ToolProgressionPlugin'
-        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + ':' + version
+        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + '-core:' + version
     }
 
     // Add a classifier to the JAR ('-core' at the end of the file name)
