@@ -12,7 +12,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 version = "${mc_version}-${mod_version}"
-group = "tyra314.toolprogression" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "tyra314" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+def archiveGroup = group
 archivesBaseName = "toolprogression"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -89,6 +90,7 @@ task deobfJar(type: Jar, dependsOn: 'jar') {
 
     manifest {
         attributes 'FMLAT': 'toolprogression_at.cfg'
+        attributes 'Maven-Artifact': group + ':' + archivesBaseName + ':' + version
     }
 }
 
@@ -108,6 +110,7 @@ task coreJar(type: Jar) {
     }
     manifest {
         attributes "FMLCorePlugin": 'tyra314.toolprogression.core.ToolProgressionPlugin'
+        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + ':' + version
     }
 
     // Add a classifier to the JAR ('-core' at the end of the file name)
@@ -153,6 +156,7 @@ jar {
     manifest {
         attributes 'ContainedDeps': 'META-INF/libraries' + '/' + coreJar.archivePath.name
         attributes 'FMLAT': 'toolprogression_at.cfg'
+        attributes 'Maven-Artifact': archiveGroup + ':' + archivesBaseName + ':' + version
     }
     exclude 'tyra314/toolprogression/core/**'
 
