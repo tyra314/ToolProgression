@@ -86,9 +86,81 @@ dependencies {
 task deobfJar(type: Jar, dependsOn: 'jar') {
     from sourceSets.main.output
     classifier "dev"
+
+    manifest {
+        attributes 'FMLAT': 'toolprogression_at.cfg'
+    }
 }
-artifacts {
-    archives deobfJar
+
+reobf {
+    coreJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+task coreJar(type: Jar) {
+    // Copy all compiled files and resources from the source set to the JAR
+    // If you have additional source sets, add the same logic here
+    from(sourceSets.main.output) {
+        // Don't include the coremod in the main mod
+        // If you have more coremod-related packages that aren't nested in the main one, add exclusions for them
+        include 'tyra314/toolprogression/core/**'
+    }
+    manifest {
+        attributes "FMLCorePlugin": 'tyra314.toolprogression.core.ToolProgressionPlugin'
+    }
+
+    // Add a classifier to the JAR ('-core' at the end of the file name)
+    // Distinguishes the mod JAR from the shipped one
+    classifier 'core'
+    group = 'build'
+}
+
+task signCoreJar(type: SignJar) {
+    onlyIf { // Skip the task if our secret data isn't available
+        project.hasProperty('keyStore')
+    }
+    dependsOn reobfCoreJar
+    if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
+        keyStore = project.findProperty('keyStore')
+        alias = project.findProperty('keyStoreAlias')
+        storePass = project.findProperty('keyStorePass')
+        keyPass = project.findProperty('keyStoreKeyPass')
+        inputFile = coreJar.archivePath
+        outputFile = coreJar.archivePath
+    }
+}
+
+
+task signMainJar(type: SignJar) {
+    onlyIf { // Skip the task if our secret data isn't available
+        project.hasProperty('keyStore')
+    }
+    dependsOn reobfJar
+    if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
+        keyStore = project.findProperty('keyStore')
+        alias = project.findProperty('keyStoreAlias')
+        storePass = project.findProperty('keyStorePass')
+        keyPass = project.findProperty('keyStoreKeyPass')
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+build.dependsOn signMainJar
+jar.dependsOn signCoreJar
+jar {
+    manifest {
+        attributes 'ContainedDeps': 'META-INF/libraries' + '/' + coreJar.archivePath.name
+        attributes 'FMLAT': 'toolprogression_at.cfg'
+    }
+    exclude 'tyra314/toolprogression/core/**'
+
+    // Add the output of the mod JAR task to the main JAR for later extraction
+    from(coreJar.archivePath.absolutePath) {
+        include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
+        into 'META-INF/libraries'
+    }
 }
 
 processResources {
@@ -112,31 +184,6 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-jar {
-
-    manifest {
-        attributes 'FMLCorePluginContainsFMLMod': 'true',
-                   'FMLCorePlugin': 'tyra314.toolprogression.core.ToolProgressionPlugin',
-                   'FMLAT': 'toolprogression_at.cfg'
-    }
+artifacts {
+    archives deobfJar
 }
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    // Skips if the keyStore property is missing.
-    onlyIf {
-        project.hasProperty('keyStore')
-    }
-
-    // findProperty allows us to reference the property without it existing.
-    // Using project.propName would cause the script to fail validation if
-    // the property did not exist.
-    keyStore = project.findProperty('keyStore')
-    alias = project.findProperty('keyStoreAlias')
-    storePass = project.findProperty('keyStorePass')
-    keyPass = project.findProperty('keyStoreKeyPass')
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-// Runs this task automatically when build is ran.
-build.dependsOn signJar

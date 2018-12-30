@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @IFMLLoadingPlugin.TransformerExclusions({"tyra314.toolprogression"})
+@IFMLLoadingPlugin.MCVersion("1.12.2")
 public class ToolProgressionPlugin implements IFMLLoadingPlugin
 {
     public static boolean isObf;
