@@ -34,7 +34,7 @@ public class ToolHelper
         {
             overwrite.apply(item);
         }
-        OverwrittenContent.tools.put(item.getUnlocalizedName(), overwrite);
+        OverwrittenContent.tools.put(item.getTranslationKey(), overwrite);
     }
 
     public static ToolOverwrite createFromConfigString(String config)

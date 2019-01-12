@@ -54,7 +54,7 @@ public class Unset extends SubCommand
             ConfigHandler.toolOverwrites.unset(item);
             ConfigHandler.toolOverwrites.save();
 
-            OverwrittenContent.tools.remove(item.getUnlocalizedName());
+            OverwrittenContent.tools.remove(item.getTranslationKey());
 
             sendMessage(sender, "deleted the tool overwrite for '" + TextFormatting.BOLD.toString
                     () +
@@ -78,7 +78,7 @@ public class Unset extends SubCommand
             ConfigHandler.blockOverwrites.unset(BlockHelper.getKeyString(state));
             ConfigHandler.blockOverwrites.save();
 
-            OverwrittenContent.blocks.remove(block.getUnlocalizedName());
+            OverwrittenContent.blocks.remove(block.getTranslationKey());
 
             sendMessage(sender, "deleted the block overwrite for '" + TextFormatting.BOLD.toString
                     () +

@@ -71,7 +71,7 @@ public class Set extends SubCommand
             ConfigHandler.toolOverwrites.set(item, overwrite);
             ConfigHandler.toolOverwrites.save();
 
-            OverwrittenContent.tools.put(item.getUnlocalizedName(), overwrite);
+            OverwrittenContent.tools.put(item.getTranslationKey(), overwrite);
 
             sendMessage(sender, "added the tool overwrite for '" + TextFormatting.BOLD.toString
                     () +
@@ -113,7 +113,7 @@ public class Set extends SubCommand
             ConfigHandler.blockOverwrites.set(key, overwrite);
             ConfigHandler.blockOverwrites.save();
 
-            OverwrittenContent.blocks.put(block.getUnlocalizedName(), overwrite);
+            OverwrittenContent.blocks.put(block.getTranslationKey(), overwrite);
 
             sendMessage(sender, "added the block overwrite for '"
                                 + TextFormatting.BOLD.toString() +

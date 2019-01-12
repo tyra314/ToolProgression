@@ -114,7 +114,7 @@ public class BlockHelper
         {
             overwrite.apply(state);
         }
-        OverwrittenContent.blocks.put(state.getBlock().getUnlocalizedName(), overwrite);
+        OverwrittenContent.blocks.put(state.getBlock().getTranslationKey(), overwrite);
     }
 
     public static BlockOverwrite createFromConfigString(String config,

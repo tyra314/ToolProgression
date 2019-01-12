@@ -14,7 +14,7 @@ public class BaseItem extends Item implements IModelRegister
     public BaseItem(String name)
     {
         setRegistryName(name);
-        setUnlocalizedName(ToolProgressionMod.MODID + "." + name);
+        setTranslationKey(ToolProgressionMod.MODID + "." + name);
     }
 
     @Override
