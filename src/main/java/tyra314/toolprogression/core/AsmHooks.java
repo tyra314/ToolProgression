@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 
 public class AsmHooks
 {
+    @SuppressWarnings("unused")
     public static boolean canHarvestBlock(@Nonnull EntityPlayer player,
                                           @Nonnull IBlockAccess world,
                                           @Nonnull BlockPos pos)
