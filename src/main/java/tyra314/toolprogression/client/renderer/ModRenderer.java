@@ -17,9 +17,9 @@ public class ModRenderer
     @SideOnly(Side.CLIENT)
     public static void registerModels(ModelRegistryEvent event)
     {
-        ToolProgressionMod.logger.info("Registering block models");
+        ToolProgressionMod.logger.debug("Registering block models");
 
-        ToolProgressionMod.logger.info("Registering item models");
+        ToolProgressionMod.logger.debug("Registering item models");
 
         for (Item item : ModItems.ITEMS)
         {
@@ -29,6 +29,6 @@ public class ModRenderer
             }
         }
 
-        ToolProgressionMod.logger.info("Registered models");
+        ToolProgressionMod.logger.debug("Registered models");
     }
 }
