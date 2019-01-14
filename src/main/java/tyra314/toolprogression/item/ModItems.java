@@ -22,14 +22,10 @@ public class ModItems
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
-        ToolProgressionMod.logger.info("Registering items");
+        ToolProgressionMod.logger.debug("Registering items");
 
-        for (Item item : ModItems.ITEMS)
-        {
-            ToolProgressionMod.logger.debug("Register item: " + item.getUnlocalizedName());
-            event.getRegistry().register(item);
-        }
+        event.getRegistry().registerAll(ModItems.ITEMS);
 
-        ToolProgressionMod.logger.info("Registered items");
+        ToolProgressionMod.logger.debug("Registered items");
     }
 }
