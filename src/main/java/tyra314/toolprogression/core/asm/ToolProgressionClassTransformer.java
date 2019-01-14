@@ -19,10 +19,6 @@ public class ToolProgressionClassTransformer implements IClassTransformer
             "net.minecraftforge.common.ForgeHooks"
     };
 
-    private static void transformFOO(ClassNode node, boolean isObfuscated)
-    {
-    }
-
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass)
     {
