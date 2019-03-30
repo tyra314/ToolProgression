@@ -57,8 +57,6 @@ public class ConfigHandler
             initGeneralConfig(base_cfg);
             initMiningLevelConfig(level_names_cfg);
 
-            blockOverwrites.load();
-            toolOverwrites.load();
             matOverwrites.load();
         }
         catch (Exception e1)
@@ -77,6 +75,12 @@ public class ConfigHandler
                 level_names_cfg.save();
             }
         }
+    }
+
+    public static void readOverwriteConfig()
+    {
+        blockOverwrites.load();
+        toolOverwrites.load();
     }
 
     private static void initMiningLevelConfig(Configuration cfg)
