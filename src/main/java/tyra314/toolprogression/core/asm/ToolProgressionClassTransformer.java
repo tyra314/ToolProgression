@@ -24,10 +24,10 @@ public class ToolProgressionClassTransformer implements IClassTransformer
     {
         int index = Arrays.asList(classesToTransform).indexOf(transformedName);
 
-        return index != -1 ? transform(index, basicClass, ToolProgressionPlugin.isObf) : basicClass;
+        return index != -1 ? transform(index, basicClass) : basicClass;
     }
 
-    private byte[] transform(int index, byte[] basicClass, boolean isObfuscated)
+    private byte[] transform(int index, byte[] basicClass)
 
     {
         LogManager.getLogger("toolprogression_core")
@@ -42,7 +42,7 @@ public class ToolProgressionClassTransformer implements IClassTransformer
             switch (index)
             {
                 case 0:
-                    if (!transformForgeHooks(node, isObfuscated))
+                    if (!transformForgeHooks(node))
                     {
                         LogManager.getLogger("toolprogression_core").error(
                                 "Something went wrong while applying the ToolProgression ASM. " +
@@ -65,10 +65,10 @@ public class ToolProgressionClassTransformer implements IClassTransformer
         return basicClass;
     }
 
-    private boolean transformForgeHooks(ClassNode forgeHooksClass, boolean isObfuscated)
+    private boolean transformForgeHooks(ClassNode forgeHooksClass)
     {
         final String CAN_HARVEST = "canHarvestBlock";
-        final String CAN_HARVEST_DESC = isObfuscated ? "(Laow;Laed;Lamy;Let;)Z" :
+        final String CAN_HARVEST_DESC = ToolProgressionPlugin.isObf ? "(Laow;Laed;Lamy;Let;)Z" :
                 "(Lnet/minecraft/block/Block;" +
                 "Lnet/minecraft/entity/player/EntityPlayer;" +
                 "Lnet/minecraft/world/IBlockAccess;" +
@@ -84,8 +84,7 @@ public class ToolProgressionClassTransformer implements IClassTransformer
                 {
                     if (instruction.getOpcode() == ALOAD &&
                         ((VarInsnNode) instruction).var == 2 &&
-                        instruction.getPrevious() instanceof LineNumberNode &&
-                        ((LineNumberNode) instruction.getPrevious()).line == 203)
+                        instruction.getPrevious() instanceof LineNumberNode)
                     {
                         targetNode = instruction;
                         break;
@@ -108,7 +107,7 @@ public class ToolProgressionClassTransformer implements IClassTransformer
                     toInsert.add(new MethodInsnNode(INVOKESTATIC,
                             Type.getInternalName(AsmHooks.class),
                             "canHarvestBlock",
-                            isObfuscated ? "(Laed;Lamy;Let;)Z" :
+                            ToolProgressionPlugin.isObf ? "(Laed;Lamy;Let;)Z" :
                                     "(Lnet/minecraft/entity/player/EntityPlayer;" +
                                     "Lnet/minecraft/world/IBlockAccess;" +
                                     "Lnet/minecraft/util/math/BlockPos;)Z",
