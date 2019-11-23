@@ -15,6 +15,8 @@ public class ConfigHandler
     private static final String CATEGORY_MINING_LEVEL = "mining_levels";
     private static final String CATEGORY_TOOLTIP = "tooltip";
 
+    public static boolean generate_dev_output = false;
+
     public static boolean prevent_block_destruction = false;
 
     public static boolean tooltip_enabled = true;
@@ -116,6 +118,8 @@ public class ConfigHandler
     private static void initGeneralConfig(Configuration cfg)
     {
         cfg.addCustomCategoryComment(CATEGORY_GENERAL, "General configuration");
+
+        generate_dev_output = cfg.getBoolean("generate_configs", CATEGORY_GENERAL, false, "Set this to true to generate the initial config on game init. (This generates the blocks.cfg, tools.cfg, and materials.cfg file.");
 
         tooltip_enabled =
                 cfg.getBoolean("enabled",

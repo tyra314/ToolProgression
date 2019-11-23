@@ -14,10 +14,13 @@ public class Overwrites
         {
             String config = BlockHelper.getConfigString(state);
 
-            CommonProxy.blocks_config.getString(BlockHelper.getKeyString(state),
-                    "block",
-                    config,
-                    BlockHelper.getKeyString(state));
+            if (CommonProxy.blocks_config != null)
+            {
+                CommonProxy.blocks_config.getString(BlockHelper.getKeyString(state),
+                        "block",
+                        config,
+                        BlockHelper.getKeyString(state));
+            }
 
             BlockHelper.applyTo(state);
         }
@@ -27,7 +30,7 @@ public class Overwrites
     {
         String config = ToolHelper.getConfigString(item);
 
-        if (!config.isEmpty())
+        if (!config.isEmpty() && CommonProxy.tools_config != null)
         {
             //noinspection ConstantConditions
             CommonProxy.tools_config.getString(item.getRegistryName().toString(),
@@ -44,7 +47,10 @@ public class Overwrites
         String config = String.valueOf(mat.getHarvestLevel());
         String name = mat.name().toLowerCase();
 
-        CommonProxy.mats_config.getString(name, "material", config, name);
+        if (CommonProxy.mats_config != null)
+        {
+            CommonProxy.mats_config.getString(name, "material", config, name);
+        }
 
         MaterialOverwrite.applyToMaterial(mat);
     }

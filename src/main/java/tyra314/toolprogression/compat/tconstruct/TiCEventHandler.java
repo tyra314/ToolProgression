@@ -29,8 +29,11 @@ public class TiCEventHandler
         {
             HeadMaterialStats stats = (HeadMaterialStats) event.stats;
 
-            CommonProxy.mats_config.getString(name, "material", String.valueOf(stats
-                    .harvestLevel), name);
+            if(ConfigHandler.generate_dev_output)
+            {
+                CommonProxy.mats_config.getString(name, "material", String.valueOf(stats
+                        .harvestLevel), name);
+            }
 
             ToolProgressionMod.logger.info("TiC Material registered: " + name);
 
