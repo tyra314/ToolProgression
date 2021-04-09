@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import slimeknights.tconstruct.library.events.MaterialEvent;
 import slimeknights.tconstruct.library.events.TinkerCraftingEvent;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
+import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.modifiers.IModifier;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.utils.TagUtil;
@@ -20,14 +21,14 @@ import tyra314.toolprogression.proxy.CommonProxy;
 public class TiCEventHandler
 {
     @SubscribeEvent
-    public void handleMaterial(MaterialEvent.StatRegisterEvent<HeadMaterialStats> event)
+    public void handleMaterialStats(MaterialEvent.StatRegisterEvent<HeadMaterialStats> event)
     {
         String name = event.material.identifier;
 
 
-        if (event.stats instanceof HeadMaterialStats)
+        if (event.stats != null)
         {
-            HeadMaterialStats stats = (HeadMaterialStats) event.stats;
+            HeadMaterialStats stats = event.stats;
 
             if(ConfigHandler.generate_dev_output)
             {
@@ -45,10 +46,41 @@ public class TiCEventHandler
                         stats.attack,
                         newLevel));
 
-                ToolProgressionMod.logger.info("TiC Material overwrite: " +
-                                               String.valueOf(newLevel));
+                ToolProgressionMod.logger.info("TiC Material overwrite: " + newLevel);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void handleMaterial(MaterialEvent.MaterialRegisterEvent event)
+    {
+        String name = event.material.identifier;
+
+        for(IMaterialStats material_stats : event.material.getAllStats()) {
+            if (material_stats instanceof HeadMaterialStats) {
+                HeadMaterialStats stats = (HeadMaterialStats) material_stats;
+
+                if(ConfigHandler.generate_dev_output)
+                {
+                    CommonProxy.mats_config.getString(name, "material", String.valueOf(stats
+                            .harvestLevel), name);
+                }
+
+                ToolProgressionMod.logger.info("TiC Material registered: " + event.material.identifier);
+
+                if (TiCMaterial.hasOverwrite(event.material.identifier))
+                {
+                    int newLevel = TiCMaterial.getOverwrite(event.material.identifier);
+                    event.material.addStats(new HeadMaterialStats(stats.durability,
+                            stats.miningspeed,
+                            stats.attack,
+                            newLevel));
+
+                    ToolProgressionMod.logger.info("TiC Material overwrite: " + newLevel);
+                }
+            }
+        }
+
     }
 
     private int getToolHarvestLevel(ItemStack tinker_tool)
